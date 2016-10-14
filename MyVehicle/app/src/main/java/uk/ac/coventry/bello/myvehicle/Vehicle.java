@@ -3,6 +3,7 @@ package uk.ac.coventry.bello.myvehicle;
 /**
  * Created by bello on 10/10/2016.
  */
+
 public class Vehicle {
     private String make;
     private int year;
@@ -16,10 +17,10 @@ public class Vehicle {
         count();
     }
 
-    public Vehicle(String make, int Year){
+    public Vehicle(String make, int year){
         this.make = make;
         this.year = year;
-        this.message = "You car is a " + make + " built in " + year;
+        this.message = "Your car is a " + make + " built in " + year;
         count();
     }
 

@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:inputType="number"
         android:ems="10"
-        android:id="@+id/editText"
+        android:id="@+id/yearInput"
         android:layout_alignBottom="@+id/labelYear"
         android:layout_toEndOf="@+id/textView2" />
 
@@ -48,17 +48,17 @@
         android:text="Run"
         android:id="@+id/button"
         android:layout_marginTop="36dp"
-        android:layout_below="@+id/editText"
+        android:layout_below="@+id/yearInput"
         android:layout_centerHorizontal="true" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:text="Name"
+        android:text=""
         android:ems="10"
-        android:id="@+id/editText2"
+        android:id="@+id/makeInput"
         android:layout_above="@+id/labelYear"
-        android:layout_alignStart="@+id/editText" />
+        android:layout_alignStart="@+id/yearInput" />
 
 </RelativeLayout>
