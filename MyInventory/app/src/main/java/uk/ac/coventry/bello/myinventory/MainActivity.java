@@ -12,6 +12,7 @@ import android.content.Intent;
 
 
 public class MainActivity extends AppCompatActivity {
+    private final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
