@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="uk.ac.coventry.bello.myinventory.AddItemActivity">
+    <item
+        android:id="@+id/done_button"
+        android:title="@string/complete_add_item"
+        android:icon="@drawable/ic_check_black_24dp"
+        app:showAsAction="ifRoom"/>
+</menu>
