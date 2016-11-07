@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="uk.ac.coventry.bello.myinventory.AddItemActivity">
     <item
-        android:id="@+id/done_button"
+        android:id="@+id/action_done"
         android:title="@string/complete_add_item"
-        android:icon="@drawable/ic_check_black_24dp"
-        app:showAsAction="ifRoom"/>
+        android:actionLayout="@layout/action_done_toolbar_button"
+        app:showAsAction="always|withText"/>
 </menu>
