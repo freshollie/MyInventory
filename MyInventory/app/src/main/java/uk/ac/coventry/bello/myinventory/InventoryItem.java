@@ -1,23 +1,21 @@
 package uk.ac.coventry.bello.myinventory;
 
-public class Item {
+public class InventoryItem {
     private String name;
-    private float price;
+    private double price;
     private int totalGrams;
     private int grams;
 
-    public Item(String name, float price, int totalGrams){
+    public InventoryItem(String name, double price){
         this.name = name;
         this.price = price;
-        this.totalGrams = totalGrams;
-        this.grams = totalGrams;
     }
 
     public String getName(){
         return this.name;
     }
 
-    public float getPrice(){
+    public double getPrice(){
         return this.price;
     }
 
