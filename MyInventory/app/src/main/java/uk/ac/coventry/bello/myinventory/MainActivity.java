@@ -11,7 +11,10 @@ import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
+import android.widget.TextView;
 
+import org.w3c.dom.Text;
+import android.support.v7.widget.DefaultItemAnimator;
 
 public class MainActivity extends AppCompatActivity {
     private final String TAG = "MainActivity";
@@ -19,30 +22,45 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private Inventory mInventory;
+    private TextView mEmptyView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         mInventory = Inventory.getInstance();
-
+        mInventory.load(getApplicationContext());
 
         mRecyclerView = (RecyclerView) findViewById(R.id.inventory_recyler_view);
+        mEmptyView = (TextView) findViewById(R.id.empty_inventory_view);
 
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-        mRecyclerView.setHasFixedSize(true);
 
-        // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        if (mInventory.getInventory().isEmpty()) {
+            mRecyclerView.setVisibility(View.GONE);
+            mEmptyView.setVisibility(View.VISIBLE);
+        } else {
+            // use this setting to improve performance if you know that changes
+            // in content do not change the layout size of the RecyclerView
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mEmptyView.setVisibility(View.GONE);
 
-        // specify an adapter (see also next example)
-        mAdapter = new InventoryItemsAdapter(mInventory); // Still need to give a data set;
-        mRecyclerView.setAdapter(mAdapter);
+            mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+            mRecyclerView.setHasFixedSize(true);
+
+            // use a linear layout manager
+            mLayoutManager = new LinearLayoutManager(this);
+            mRecyclerView.setLayoutManager(mLayoutManager);
+
+            // specify an adapter (see also next example)
+            mAdapter = new InventoryItemsAdapter(mInventory, getApplicationContext()); // Still need to give a data set;
+            mRecyclerView.setAdapter(mAdapter);
+
+
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

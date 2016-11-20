@@ -1,10 +1,10 @@
 package uk.ac.coventry.bello.myinventory;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class InventoryItem {
     private String name;
     private double price;
-    private int totalGrams;
-    private int grams;
 
     public InventoryItem(String name, double price){
         this.name = name;
@@ -19,12 +19,18 @@ public class InventoryItem {
         return this.price;
     }
 
-    public float getTotalGrams(){
-        return this.totalGrams;
-    }
+    public JSONObject getJson(){
+        JSONObject jsonItem = new JSONObject();
 
-    public int getGrams(){
-        return this.grams;
+        try{
+            jsonItem.put("name", getName());
+            jsonItem.put("price", getPrice());
+
+        } catch(JSONException e){
+            e.printStackTrace();
+        }
+
+        return jsonItem;
     }
 
 

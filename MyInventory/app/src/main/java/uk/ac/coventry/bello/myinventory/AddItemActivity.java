@@ -88,6 +88,7 @@ public class AddItemActivity extends AppCompatActivity {
 
         if (!inventory.isItem(getItemName())) {
             inventory.setItem(getItem(), getItemQuanitiy());
+            inventory.save(getApplicationContext());
             return true;
         } else {
             new AlertDialog.Builder(this)
