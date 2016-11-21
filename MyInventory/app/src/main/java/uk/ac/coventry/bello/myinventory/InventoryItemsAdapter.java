@@ -1,6 +1,8 @@
 package uk.ac.coventry.bello.myinventory;
 
 import android.content.Context;
+import android.support.annotation.BoolRes;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
@@ -12,6 +14,7 @@ import android.view.LayoutInflater;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.text.DecimalFormat;
@@ -26,6 +29,12 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
     private List<InventoryItem> mItemList;
     private Context mContext;
     private String TAG = "InventoryItemAdapter";
+    private ArrayList<InventoryItem> deleteItems;
+    private boolean deleteMode;
+
+    public String SORT_BY_NAME = "sort_by_name";
+    public String SORT_BY_PRICE = "sort_by_price";
+    public String SORT_BY_QUANTITY = ""
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -37,7 +46,9 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
         public TextView mQuantityText;
         public ImageButton mAddButton;
         public ImageButton mRemoveButton;
+        public CardView mCardView;
         public View mView;
+        public boolean selected;
 
         public ItemViewHolder(View v) {
             super(v);
@@ -48,34 +59,56 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
             mAddButton = (ImageButton)v.findViewById(R.id.item_card_add_quantity_button);
             mRemoveButton = (ImageButton)v.findViewById(R.id.item_card_remove_quantity_button);
 
+            mCardView = (CardView)v.findViewById(R.id.card_view);
+
             mView = v;
         }
 
         public void setButtons(final InventoryItem item, final Inventory inventory, final InventoryItemsAdapter inventoryItemsAdapter, final int position){
-            mAddButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    inventory.setItem(item, inventory.getQuantity(item) + 1);
-                    inventory.save(view.getContext());
-                    inventoryItemsAdapter.notifyItemChanged(position);
-                }
-            });
 
-            mRemoveButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (inventory.getQuantity(item)>0) {
-                        inventory.setItem(item, inventory.getQuantity(item) - 1);
+            if (!inventoryItemsAdapter.getDeleteMode()) {
+                mAddButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        inventory.setItem(item, inventory.getQuantity(item) + 1);
                         inventory.save(view.getContext());
                         inventoryItemsAdapter.notifyItemChanged(position);
-
                     }
-                }
-            });
+                });
+
+                mRemoveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (inventory.getQuantity(item) > 0) {
+                            inventory.setItem(item, inventory.getQuantity(item) - 1);
+                            inventory.save(view.getContext());
+                            inventoryItemsAdapter.notifyItemChanged(position);
+
+                        }
+                    }
+                });
+
+                mView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        ((MainActivity)inventoryItemsAdapter.mContext).getActionBar().
+                        return false;
+                    }
+                });
+            }
+
             mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mView.findViewById(R.id.item_card_table);\
+                    if(inventoryItemsAdapter.getDeleteMode()){
+                        if(selected) {
+                            inventoryItemsAdapter.removeDeleteItem(item);
+                        } else {
+                            inventoryItemsAdapter.appendDeleteItem(item);
+                        }
+                    } else {
+                        mView.findViewById(R.id.item_card_table);
+                    }
                 }
             });
 
@@ -87,7 +120,36 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
         mInventory = inventory;
         mItemList = inventory.getItems();
         mContext = context;
+        deleteMode = false;
+        resetDeleteItems();
     }
+
+    public void setDeleteMode(boolean mode) {
+        resetDeleteItems();
+        deleteMode = mode;
+    }
+
+    public void setDeleteModeTheme(){
+        mContext. findViewById(R.id.toolbar);
+    }
+
+    public boolean getDeleteMode(){
+        return deleteMode;
+    }
+
+    public void resetDeleteItems(){
+        deleteItems = new ArrayList<InventoryItem>();
+    }
+
+    public void appendDeleteItem(InventoryItem item){
+        deleteItems.add(item);
+    }
+
+    public void removeDeleteItem(InventoryItem item){
+        deleteItems.remove(item);
+    }
+
+    public setSort(String sort)
 
     // Create new views (invoked by the layout manager)
     @Override
@@ -107,6 +169,7 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
     public void onBindViewHolder(final ItemViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
+
         DecimalFormat twoDForm = new DecimalFormat("#.00");
 
         InventoryItem item = mItemList.get(position);

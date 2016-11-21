@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             mRecyclerView.setLayoutManager(mLayoutManager);
 
             // specify an adapter (see also next example)
-            mAdapter = new InventoryItemsAdapter(mInventory, getApplicationContext()); // Still need to give a data set;
+            mAdapter = new InventoryItemsAdapter(mInventory, getApplicationContext(), new CallBac); // Still need to give a data set;
             mRecyclerView.setAdapter(mAdapter);
 
 
@@ -70,6 +70,10 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(mIntent);
             }
         });
+    }
+
+    public void changeToolbar(){
+
     }
 
     @Override

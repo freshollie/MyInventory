@@ -23,18 +23,14 @@ public class Inventory {
     private Map<InventoryItem, Integer> mInventory;
     private static final Inventory INSTANCE = new Inventory();
 
-    private Inventory(){
+    private Inventory() {
         resetInventory();
-        //makeTestItemsList(); // For testing only
     }
-    public void makeTestItemsList(){
-        mInventory.put(new InventoryItem("Bacon", 1.69), 1);
-        mInventory.put(new InventoryItem("Mince", 1.50), 2);
-        mInventory.put(new InventoryItem("Chips", 2.0), 1);
-    }
+
     public void resetInventory(){
         mInventory = new HashMap<>();
     }
+
     public static Inventory getInstance(){
         return INSTANCE;
     }

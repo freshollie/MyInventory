@@ -6,4 +6,6 @@
     <string name="item_card_price_text">£%1$s</string>
     <string name="saved_items_key">saved_inventory_items</string>
     <string name="inventory_items_empty">You don\'t appear to have any items in your inventory. Press the plus button to add items.</string>
+    <string name="create_shopping_list">Create Shopping List</string>
+    <string name="sort_by_name_"
 </resources>
