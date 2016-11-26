@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,13 +18,29 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AddItemActivity"
+            android:name=".activities.AddItemActivity"
             android:label="@string/title_activity_add_item"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="MainActivity" />
+                android:value=".activities.MainActivity" />
         </activity>
+        <activity
+            android:name=".MealListActivity"
+            android:label="@string/title_activity_meal_list"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MealMakerActivity"
+            android:label="@string/title_activity_meal_maker"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".DrawerActivity"
+            android:label="@string/title_activity_drawer"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.AddMealActivity"
+            android:label="@string/title_activity_add_meal"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

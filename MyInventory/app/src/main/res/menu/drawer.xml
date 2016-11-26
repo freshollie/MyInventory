@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_inventory"
+            android:icon="@drawable/ic_view_comfy_black_24dp"
+            android:title="@string/navigation_drawer_inventory_option" />
+        <item
+            android:id="@+id/nav_meals"
+            android:icon="@drawable/ic_restaurant_menu_black_24dp"
+            android:title="@string/navigation_drawer_meals_option" />
+
+    </group>
+
+    <item android:title="Other">
+        <menu>
+            <item
+                android:id="@+id/nav_manage"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="@string/navigation_drawer_settings_option" />
+        </menu>
+    </item>
+
+</menu>

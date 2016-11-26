@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="uk.ac.coventry.bello.myinventory.activities.MainActivity">
+    <item
+        android:id="@+id/action_list_to_keep"
+        android:icon="@drawable/ic_assignment_returned_white_24dp"
+        android:title="@string/create_shopping_list"
+        app:showAsAction="ifRoom"/>
+</menu>
