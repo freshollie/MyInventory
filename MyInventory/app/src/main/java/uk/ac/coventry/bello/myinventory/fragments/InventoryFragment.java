@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -69,6 +70,13 @@ public class InventoryFragment extends MyInventoryFragment {
 
         setUpInventoryListAdapter();
 
+        mMainActivity.setAppBarColor(
+                ContextCompat.getColor(getContext(), R.color.colorPrimary)
+        );
+        mMainActivity.setDeleteModeAppBarColor(
+                ContextCompat.getColor(getContext(), R.color.colorAccent)
+        );
+
         mMainActivity.setMenuLayout(R.menu.menu_main_inventory);
     }
 
@@ -115,26 +123,9 @@ public class InventoryFragment extends MyInventoryFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        mMainActivity = (MainActivity)context;
-        /*
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-        */
+        mMainActivity = (MainActivity) context;
+
     }
-    /*
-    public boolean onPrepareOptionsMenu(Menu menu){
-
-
-        onPrepareUpdateToolbar();
-        onCreateOptionsMenu(menu);
-
-        return true;
-    }
-    */
 
     public void onDeleteModeChange(){
         if(mAdapter.isDeleteMode()) {
@@ -148,6 +139,7 @@ public class InventoryFragment extends MyInventoryFragment {
         } else {
             mActivity.findViewById(R.id.main_activity_content_layout).setOnClickListener(null);
         }
+
         int menuLayout;
 
         if(mAdapter!=null){
@@ -195,44 +187,50 @@ public class InventoryFragment extends MyInventoryFragment {
         void onFragmentInteraction(Uri uri);
     }
 
+    public void pushToKeep(){
+        if (!mInventory.getMissingItemsNameList().isEmpty()) { // We actually have items to put into the shopping list
+            try {
+
+                String date = DateFormat.getDateInstance().format(Calendar.getInstance().getTime());
+                Intent keepIntent = new Intent(Intent.ACTION_SEND);
+
+                keepIntent.setType("text/plain");
+                keepIntent.setPackage("com.google.android.keep");
+                keepIntent.putExtra(Intent.EXTRA_SUBJECT, getContext().getString(R.string.shopping_list_title, date));
+                keepIntent.putExtra(Intent.EXTRA_TEXT, TextUtils.join("\n", mInventory.getMissingItemsNameList()));
+
+                startActivity(keepIntent);
+
+            } catch (Exception e) {
+
+                final Snackbar bar = Snackbar.make(mActivity.findViewById(R.id.main_activity_content_layout), getContext().getString(R.string.no_google_keep), Snackbar.LENGTH_LONG)
+                        .setAction("Dismiss", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                            }
+                        });
+
+                bar.show();
+            }
+
+        } else {
+            final Snackbar bar = Snackbar.make(mActivity.findViewById(R.id.main_activity_content_layout), getContext().getString(R.string.no_shopping_items), Snackbar.LENGTH_LONG)
+                    .setAction("Dismiss", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
+
+            bar.show();
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch(item.getItemId()) {
             case R.id.action_list_to_keep:
-                if (!mInventory.getMissingItemsNameList().isEmpty()) { // We actually have items to put into the shopping list
-                    try {
-
-                        Intent keepIntent = new Intent(Intent.ACTION_SEND);
-                        keepIntent.setType("text/plain");
-                        keepIntent.setPackage("com.google.android.keep");
-
-                        String date = DateFormat.getDateInstance().format(Calendar.getInstance().getTime());
-
-                        keepIntent.putExtra(Intent.EXTRA_SUBJECT, "Shopping List " + date);
-                        keepIntent.putExtra(Intent.EXTRA_TEXT, TextUtils.join("\n", mInventory.getMissingItemsNameList()));
-
-                        startActivity(keepIntent);
-                    } catch (Exception e) {
-                        final Snackbar bar = Snackbar.make(mActivity.findViewById(R.id.main_activity_content_layout), "Google Keep is not installed", Snackbar.LENGTH_LONG)
-                                .setAction("Dismiss", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                    }
-                                });
-
-                        bar.show();
-                    }
-                } else {
-                    final Snackbar bar = Snackbar.make(mActivity.findViewById(R.id.main_activity_content_layout), "There are no items that you need to shop for", Snackbar.LENGTH_LONG)
-                            .setAction("Dismiss", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-
-                                }
-                            });
-
-                    bar.show();
-                }
+                pushToKeep();
                 return true;
 
             case R.id.action_delete_item:

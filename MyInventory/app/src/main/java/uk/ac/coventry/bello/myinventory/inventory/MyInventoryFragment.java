@@ -9,7 +9,7 @@ import android.support.v4.app.Fragment;
  */
 
 public class MyInventoryFragment extends Fragment {
-    public boolean onBackPressed(){
+    public boolean onBackPressed(){ //Just needed a method of my fragments knowing when the back button was pressed
         return false;
     }
 }

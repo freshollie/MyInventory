@@ -29,4 +29,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="title_activity_add_meal">Add Meal</string>
+
+    <string name="no_google_keep">Google Keep is not installed</string>
+    <string name="no_shopping_items">There are no items that you need to shop for</string>
+
+    <string name="shopping_list_title">Shopping List %1$s</string>
 </resources>

@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -21,10 +20,11 @@ import uk.ac.coventry.bello.myinventory.fragments.InventoryFragment;
 
 
 /**
- * Created by Freshollie on 14/11/2016.
+ * Created by Freshollie on 27/11/2016.
  */
 
-public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAdapter.ItemViewHolder> {
+/**
+public class MealsAdapter extends RecyclerView.Adapter<InventoryItemsAdapter.ItemViewHolder> {
     private Inventory mInventory;
     private List<InventoryItem> mItemList;
     private InventoryFragment mParentInventoryFragment;
@@ -66,7 +66,7 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public InventoryItemsAdapter(Inventory inventory, InventoryFragment inventoryFragment) {
+    public MealsAdapter(Inventory inventory, InventoryFragment inventoryFragment) {
         mInventory = inventory;
         mItemList = inventory.getItems();
         mParentInventoryFragment = inventoryFragment;
@@ -126,8 +126,8 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
 
     // Create new views (invoked by the layout manager)
     @Override
-    public InventoryItemsAdapter.ItemViewHolder onCreateViewHolder(ViewGroup parent,
-                                                   int viewType) {
+    public ItemViewHolder onCreateViewHolder(ViewGroup parent,
+                                                                   int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.inventory_item_card_layout, parent, false);
@@ -229,3 +229,5 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
         return mItemList.size();
     }
 }
+
+**/

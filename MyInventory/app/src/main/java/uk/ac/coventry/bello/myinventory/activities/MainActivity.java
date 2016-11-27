@@ -47,15 +47,15 @@ public class MainActivity extends AppCompatActivity
     private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar mToolbar;
     private DrawerArrowDrawable mDrawerArrow;
-    private Integer mCurrentFragmentId;
     private NavigationView mNavigationView;
-    private MyInventoryFragment mCurrentFragment;
+
+    private MyInventoryFragment mCurrentFragment; //Instance of the currently held fragment
+    private Integer mCurrentFragmentId; // Fragment id based on menu
     private FragmentManager mFragmentManager;
+
     private Handler mHandler;
 
-    private Integer statusBarPrimaryColor;
     private Integer toolbarPrimaryColor;
-    private Integer statusBarAccentColor;
     private Integer toolbarAccentColor;
 
 
@@ -78,6 +78,16 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        setUpNavDrawer();
+
+        mFragmentManager = getSupportFragmentManager();
+        mCurrentFragmentId = 0; // Default is "Inventory" fragment
+        menuLayout = 0;
+
+        onLoadCurrentFragment();
+    }
+
+    public void setUpNavDrawer(){
 
         mDrawer = (DrawerLayout) findViewById(R.id.main_activity_drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(
@@ -112,29 +122,15 @@ public class MainActivity extends AppCompatActivity
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
 
-        mFragmentManager = getSupportFragmentManager();
-
-        setMainColors(
-                ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary),
-                Color.TRANSPARENT
-        );
-        setSecondaryColors(
-                ContextCompat.getColor(getApplicationContext(), R.color.colorAccent),
-                ContextCompat.getColor(getApplicationContext(), R.color.colorAccentDark)
-        );
-
         mDrawerToggle.syncState();
 
-        mCurrentFragmentId = 0;
-        menuLayout = 0;
-        onLoadCurrentFragment();
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        // Sync the toggle state after onRestoreInstanceState has occurred.
+        // Sync the toggle state after onRestoreInstanceState hpas occurred.
         mDrawerToggle.syncState();
     }
 
@@ -154,81 +150,40 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public void setMainColors(Integer toolbar, Integer statusBar) {
+    public void setAppBarColor(Integer toolbar) {
         toolbarPrimaryColor = toolbar;
-        statusBarPrimaryColor = statusBar;
     }
 
-    public void setSecondaryColors(Integer toolbar, Integer statusBar) {
+    public void setDeleteModeAppBarColor(Integer toolbar) {
         toolbarAccentColor = toolbar;
-        statusBarAccentColor = statusBar;
     }
 
-    public void onPrepareAnimateToolbarChangeAnimation(Integer colorFrom, Integer colorTo, Integer colorStatusFrom, Integer colorStatusTo){
+    public void onPrepareAnimateToolbarChangeAnimation(Integer colorFrom, Integer colorTo){
 
         if(colorFrom != colorTo) {
 
             ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-            ValueAnimator colorStatusAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorStatusFrom, colorStatusTo);
 
             colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
                 @Override
                 public void onAnimationUpdate(ValueAnimator animator) {
                     mToolbar.setBackgroundColor((Integer) animator.getAnimatedValue());
-
-
+                    mDrawer.setStatusBarBackground(new ColorDrawable((Integer) animator.getAnimatedValue()));
                 }
             });
 
-            colorAnimation.setDuration(3000);
+            colorAnimation.setDuration(200);
             colorAnimation.setStartDelay(0);
             colorAnimation.start();
         }
-
-        if( colorStatusFrom != colorStatusTo) {
-            // Something is going very wrong here
-
-
-            if (menuLayout == R.menu.menu_main_inventory) {
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            } else {
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                ValueAnimator colorStatusAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorStatusFrom, colorStatusTo);
-                colorStatusAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animator) {
-                        getWindow().setStatusBarColor((Integer) animator.getAnimatedValue());
-                    }
-                });
-                /*
-                colorStatusAnimation.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        if (menuLayout == R.menu.menu_main_inventory) {
-                            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                        }
-                    }
-                });
-                */
-                colorStatusAnimation.setDuration(3000);
-                colorStatusAnimation.setStartDelay(0);
-                colorStatusAnimation.start();
-            }
-
-        }
-
     }
 
 
     public void onPrepareUpdateToolbar(){
-        final ActionBar actionBar = getSupportActionBar();
 
         Integer colorFrom = ((ColorDrawable) findViewById(R.id.toolbar).getBackground()).getColor(); //Get the current toolbar color
         Integer colorTo = ((ColorDrawable) findViewById(R.id.toolbar).getBackground()).getColor();
-        Integer colorStatusFrom = getWindow().getStatusBarColor();
-        Integer colorStatusTo = getWindow().getStatusBarColor();
 
         if(menuLayout != 0) {
 
@@ -246,8 +201,6 @@ public class MainActivity extends AppCompatActivity
 
 
                 colorTo = toolbarPrimaryColor;
-
-                colorStatusTo = statusBarPrimaryColor;
 
                 mFab.show();
 
@@ -268,13 +221,11 @@ public class MainActivity extends AppCompatActivity
 
                 colorTo = toolbarAccentColor;
 
-                colorStatusTo = statusBarAccentColor;
-
                 mFab.hide();
             }
         }
 
-        onPrepareAnimateToolbarChangeAnimation(colorFrom, colorTo, colorStatusFrom, colorStatusTo);
+        onPrepareAnimateToolbarChangeAnimation(colorFrom, colorTo);
     }
 
     public void setMenuLayout(int newMenuLayout){
@@ -283,7 +234,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu){
-        Log.v(TAG, "Prepareing menu options");
         menu.clear(); // Clear the old menu
 
         onPrepareUpdateToolbar(); // Change the color of the new toolbar if required
@@ -292,7 +242,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public MyInventoryFragment getCurrentFragmentInstance(){
+    public MyInventoryFragment getNewCurrentFragmentInstance(){
         switch(mCurrentFragmentId){
             case INVENTORY_FRAGMENT_MENU_ID:
                 return new InventoryFragment();
@@ -312,8 +262,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void updateToolbarTitleForFragment() {
-
-        Log.v(TAG, "Setting title to: " + getCurrentFragmentTitle());
         getSupportActionBar().setTitle(getCurrentFragmentTitle());
     }
 
@@ -327,7 +275,7 @@ public class MainActivity extends AppCompatActivity
         // if user select the current navigation menu again or no fragment exists for that id, don't do anything
         // just close the navigation drawer
 
-        if (mFragmentManager.findFragmentByTag(getCurrentFragmentTitle()) != null || getCurrentFragmentInstance() == null){
+        if (mFragmentManager.findFragmentByTag(getCurrentFragmentTitle()) != null || getNewCurrentFragmentInstance() == null){
             mDrawer.closeDrawers();
             return;
         }
@@ -336,7 +284,8 @@ public class MainActivity extends AppCompatActivity
         // when switching between navigation menus
         // So using runnable, the fragment is loaded with cross fade effect
         // This effect can be seen in GMail app
-        mCurrentFragment = getCurrentFragmentInstance();
+
+        mCurrentFragment = getNewCurrentFragmentInstance();
 
         Runnable mPendingRunnable = new Runnable() {
             @Override
@@ -350,10 +299,7 @@ public class MainActivity extends AppCompatActivity
             }
         };
 
-        // If mPendingRunnable is not null, then add to the message queue
-        if (mPendingRunnable != null) {
-            mHandler.post(mPendingRunnable);
-        }
+        mHandler.post(mPendingRunnable);
 
         mDrawer.closeDrawers();
     }
