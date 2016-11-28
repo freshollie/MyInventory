@@ -1,5 +1,10 @@
 package uk.ac.coventry.bello.myinventory.inventory;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -7,14 +12,55 @@ import java.util.ArrayList;
  */
 
 public class Meal {
-    private ArrayList<InventoryItem> mIngredients;
+    private ArrayList<InventoryItem> ingredients;
+    private String category;
+    private String name;
 
-    public Meal(ArrayList<InventoryItem> mealIngredients){
-        mIngredients = mealIngredients;
+    public Meal(String mealName, ArrayList<InventoryItem> mealIngredients, String mealCategory){
+        ingredients = mealIngredients;
+        category = mealCategory;
+        name = mealName;
     }
 
-    public Double getMealPrice(){
+    public String getCategory(){
+        return category;
+    }
 
-        return 0.0;
+    public Double getPrice(){
+        double price = 0;
+
+        for(InventoryItem item: ingredients){
+            price += item.getPrice();
+        }
+
+        return price;
+    }
+
+    public ArrayList<InventoryItem> getIngredients(){
+        return ingredients;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public JSONObject getJson(){
+        JSONObject jsonMeal = new JSONObject();
+        JSONArray mealsArray = new JSONArray();
+
+        for (InventoryItem item: ingredients){
+            mealsArray.put(item.getName());
+        }
+
+        try{
+            jsonMeal.put("name", getName());
+            jsonMeal.put("category", getCategory());
+            jsonMeal.put("ingredients", mealsArray);
+
+        } catch(JSONException e){
+            e.printStackTrace();
+        }
+
+        return jsonMeal;
     }
 }

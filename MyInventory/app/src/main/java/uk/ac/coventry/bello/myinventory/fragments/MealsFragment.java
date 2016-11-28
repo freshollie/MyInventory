@@ -5,14 +5,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -20,33 +18,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.text.DateFormat;
-import java.util.Calendar;
-
 import uk.ac.coventry.bello.myinventory.R;
 import uk.ac.coventry.bello.myinventory.activities.AddItemActivity;
 import uk.ac.coventry.bello.myinventory.activities.AddMealActivity;
 import uk.ac.coventry.bello.myinventory.activities.MainActivity;
-import uk.ac.coventry.bello.myinventory.inventory.Inventory;
-import uk.ac.coventry.bello.myinventory.inventory.InventoryItemsAdapter;
+import uk.ac.coventry.bello.myinventory.inventory.MealsAdapter;
+import uk.ac.coventry.bello.myinventory.inventory.MealsList;
 
 
-public class InventoryFragment extends MyInventoryFragment {
+public class MealsFragment extends MyInventoryFragment {
     // TODO: Rename parameter arguments, choose names that match
 
     private final String TAG = "InventoryFragment";
 
     private RecyclerView mRecyclerView;
-    private InventoryItemsAdapter mAdapter;
+    private MealsAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private Inventory mInventory;
+    private MealsList mMealsList;
     private TextView mEmptyView;
     private MainActivity mMainActivity;
     private FragmentActivity mActivity;
 
     private OnFragmentInteractionListener mListener;
 
-    public InventoryFragment() {
+    public MealsFragment() {
 
     }
 
@@ -60,7 +55,7 @@ public class InventoryFragment extends MyInventoryFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        return inflater.inflate(R.layout.fragment_inventory, container, false);
+        return inflater.inflate(R.layout.fragment_meal, container, false);
     }
 
     @Override
@@ -69,34 +64,36 @@ public class InventoryFragment extends MyInventoryFragment {
 
         mActivity = getActivity();
 
-        setUpInventoryListAdapter();
+        mMealsList = MealsList.getInstance();
+        mMealsList.load(mActivity.getApplicationContext());
+
+        setUpMealsListAdapter();
 
         mMainActivity.setAppBarColor(
-                ContextCompat.getColor(getContext(), R.color.colorPrimary)
+                ContextCompat.getColor(getContext(), R.color.colorSecondary)
         );
         mMainActivity.setDeleteModeAppBarColor(
                 ContextCompat.getColor(getContext(), R.color.colorAccent)
         );
 
-        mMainActivity.setMenuLayout(R.menu.menu_main_inventory);
+        mMainActivity.setMenuLayout(R.menu.menu_main_meals_list);
         mMainActivity.invalidateOptionsMenu();
 
         mMainActivity.setFabOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent mIntent = new Intent(InventoryFragment.this.getActivity(), AddItemActivity.class);
+                Intent mIntent = new Intent(MealsFragment.this.getActivity(), AddMealActivity.class);
                 startActivity(mIntent);
             }
         });
     }
 
-    public void setUpInventoryListAdapter(){
-        mInventory = Inventory.getInstance();
-        mInventory.load(mActivity.getApplicationContext());
+    public void setUpMealsListAdapter(){
+
         if(mRecyclerView == null) {
-            mRecyclerView = (RecyclerView) mActivity.findViewById(R.id.inventory_recycler_view);
+            mRecyclerView = (RecyclerView) mActivity.findViewById(R.id.meals_recycler_view);
         }
-        mEmptyView = (TextView) getActivity().findViewById(R.id.empty_inventory_view);
+        mEmptyView = (TextView) getActivity().findViewById(R.id.empty_meals_view);
 
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setHasFixedSize(true);
@@ -106,14 +103,14 @@ public class InventoryFragment extends MyInventoryFragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new InventoryItemsAdapter(mInventory, this);
+        mAdapter = new MealsAdapter(mMealsList, this);
         mRecyclerView.setAdapter(mAdapter);
 
-        onInventoryChanged();
+        onMealsListChanged();
     }
 
-    public void onInventoryChanged(){
-        if (mInventory.getInventory().isEmpty()) {
+    public void onMealsListChanged(){
+        if (mMealsList.isEmpty()) {
             mRecyclerView.setVisibility(View.GONE);
             mEmptyView.setVisibility(View.VISIBLE);
         } else {
@@ -197,52 +194,9 @@ public class InventoryFragment extends MyInventoryFragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    public void pushToKeep(){
-        if (!mInventory.getMissingItemsNameList().isEmpty()) { // We actually have items to put into the shopping list
-            try {
-
-                String date = DateFormat.getDateInstance().format(Calendar.getInstance().getTime());
-                Intent keepIntent = new Intent(Intent.ACTION_SEND);
-
-                keepIntent.setType("text/plain");
-                keepIntent.setPackage("com.google.android.keep");
-                keepIntent.putExtra(Intent.EXTRA_SUBJECT, getContext().getString(R.string.shopping_list_title, date));
-                keepIntent.putExtra(Intent.EXTRA_TEXT, TextUtils.join("\n", mInventory.getMissingItemsNameList()));
-
-                startActivity(keepIntent);
-
-            } catch (Exception e) {
-
-                final Snackbar bar = Snackbar.make(mActivity.findViewById(R.id.main_activity_content_layout), getContext().getString(R.string.no_google_keep), Snackbar.LENGTH_LONG)
-                        .setAction("Dismiss", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                            }
-                        });
-
-                bar.show();
-            }
-
-        } else {
-            final Snackbar bar = Snackbar.make(mActivity.findViewById(R.id.main_activity_content_layout), getContext().getString(R.string.no_shopping_items), Snackbar.LENGTH_LONG)
-                    .setAction("Dismiss", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                        }
-                    });
-
-            bar.show();
-        }
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch(item.getItemId()) {
-            case R.id.action_list_to_keep:
-                pushToKeep();
-                return true;
-
             case R.id.action_delete_item:
                 new AlertDialog.Builder(this.getContext())
                         .setMessage("Are you sure you want to delete the selected item(s)?")
@@ -253,7 +207,7 @@ public class InventoryFragment extends MyInventoryFragment {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 mAdapter.onRemoveSelectedItems();
                                 mAdapter.setDeleteMode(false);
-                                onInventoryChanged();
+                                onMealsListChanged();
                             }
                         })
                         .show();

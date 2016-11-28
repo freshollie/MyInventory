@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/content_add_meal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -10,7 +9,74 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="uk.ac.coventry.bello.myinventory.activities.AddMealActivity"
+    tools:context="uk.ac.coventry.bello.myinventory.activities.MainActivity"
     tools:showIn="@layout/activity_add_meal">
 
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+        <EditText
+            android:layout_width="211dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/meal_name_input"
+            android:layout_row="0"
+            android:layout_column="1" />
+
+        <TextView
+            android:layout_width="130dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/input_name_text"
+            android:id="@+id/meal_name_text"
+            android:layout_row="0"
+            android:layout_column="0" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/input_category_text"
+            android:id="@+id/meal_category_text"
+            android:layout_row="1"
+            android:layout_column="0" />
+
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/input_category_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_row="1"
+            android:layout_column="1">
+        </android.support.v7.widget.AppCompatSpinner>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:id="@+id/meal_category_input"
+            android:layout_row="1"
+            android:layout_column="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/input_ingredients_text"
+            android:layout_gravity="top"
+            android:id="@+id/item_ingredients_text"
+            android:layout_row="2"
+            android:layout_column="0" />
+
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/input_ingredients_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_row="2"
+            android:layout_column="1">
+        </android.support.v7.widget.AppCompatSpinner>
+
+    </GridLayout>
+
 </RelativeLayout>
+

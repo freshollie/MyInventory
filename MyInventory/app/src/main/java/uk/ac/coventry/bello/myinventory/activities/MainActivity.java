@@ -1,7 +1,5 @@
 package uk.ac.coventry.bello.myinventory.activities;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -11,28 +9,25 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.content.Intent;
-import android.view.WindowManager;
 import android.os.Handler;
 
 import uk.ac.coventry.bello.myinventory.fragments.InventoryFragment;
 import uk.ac.coventry.bello.myinventory.R;
-import uk.ac.coventry.bello.myinventory.inventory.MyInventoryFragment;
+import uk.ac.coventry.bello.myinventory.fragments.MealsFragment;
+import uk.ac.coventry.bello.myinventory.inventory.Inventory;
+import uk.ac.coventry.bello.myinventory.fragments.MyInventoryFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -64,19 +59,14 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Inventory.getInstance().load(getApplicationContext()); // Make sure that the inventory is loaded
+
         mHandler = new Handler();
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
         mFab = (FloatingActionButton) findViewById(R.id.fab);
-        mFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent mIntent = new Intent(MainActivity.this, AddItemActivity.class);
-                startActivity(mIntent);
-            }
-        });
 
         setUpNavDrawer();
 
@@ -84,7 +74,18 @@ public class MainActivity extends AppCompatActivity
         mCurrentFragmentId = 0; // Default is "Inventory" fragment
         menuLayout = 0;
 
+        setFabOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
         onLoadCurrentFragment();
+    }
+
+    public void setFabOnClickListener(View.OnClickListener listener) {
+        mFab.setOnClickListener(listener);
     }
 
     public void setUpNavDrawer(){
@@ -117,6 +118,7 @@ public class MainActivity extends AppCompatActivity
 
         mDrawerArrow = new DrawerArrowDrawable(this);
         mDrawerArrow.setColor(Color.WHITE);
+
         mDrawerToggle.setDrawerArrowDrawable(mDrawerArrow);
 
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -173,7 +175,7 @@ public class MainActivity extends AppCompatActivity
                 }
             });
 
-            colorAnimation.setDuration(200);
+            colorAnimation.setDuration(150);
             colorAnimation.setStartDelay(0);
             colorAnimation.start();
         }
@@ -246,6 +248,8 @@ public class MainActivity extends AppCompatActivity
         switch(mCurrentFragmentId){
             case INVENTORY_FRAGMENT_MENU_ID:
                 return new InventoryFragment();
+            case MEALS_FRAGMENT_MENU_ID:
+                return new MealsFragment();
         }
         return null;
     }

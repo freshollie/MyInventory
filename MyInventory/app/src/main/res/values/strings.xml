@@ -1,16 +1,35 @@
 <resources>
     <string name="app_name">My Inventory</string>
-    <string name="action_settings">Settings</string>
+
+    <string name="input_name_text">Name: </string>
+    <string name="input_price_text">Price: </string>
+    <string name="input_quantity_text">Quantity: </string>
+    <string name="input_category_text">Category: </string>
+    <string name="input_ingredients_text">Ingredients: </string>
+
+    <string name="input_select_ingredient_text">Select Ingredient</string>
+    <string name="input_select_category_text">Select Category</string>
+    <string name="input_add_category_text">Add Category</string>
+
+    <string name="title_activity_add_meal">Add Meal</string>
     <string name="title_activity_add_item">Add Item</string>
-    <string name="complete_add_item">Done</string>
+    <string name="done_button_title">Done</string>
+
     <string name="item_card_price_text">£%1$s</string>
 
     <string name="saved_items_key">saved_inventory_items</string>
+    <string name="saved_meals_key">saved_meals_key</string>
+    <string name="saved_categories_key">saved_categories_key</string>
+    <string name="save_key">oowyfng89aye89fay98fadsf</string>
+
     <string name="inventory_items_empty">You don\'t appear to have any items in your inventory. Press the plus button to add items.</string>
+    <string name="meals_list_empty">You don\'t appear to have any meals. Press the plus button to add a meal.</string>
+
     <string name="create_shopping_list">Create Shopping List</string>
 
     <string name="sort_by_name">Sort by name</string>
-    <string name="delete_items">Delete Items</string>
+    <string name="delete_selected_items">Delete Selected Items</string>
+    <string name="delete_selected_meals">Delete Selected Meals</string>
 
     <string name="title_activity_meal_list">MealListActivity</string>
     <string name="title_activity_meal_maker">MealMakerActivity</string>
@@ -25,10 +44,6 @@
     <string name="navigation_drawer_inventory_option">Inventory</string>
     <string name="navigation_drawer_meals_option">Meals</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
-    <string name="title_activity_add_meal">Add Meal</string>
 
     <string name="no_google_keep">Google Keep is not installed</string>
     <string name="no_shopping_items">There are no items that you need to shop for</string>

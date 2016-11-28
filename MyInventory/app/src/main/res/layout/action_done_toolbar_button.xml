@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:paddingLeft="5dp"
         android:gravity="center"
-        android:text="@string/complete_add_item"/>
+        android:text="@string/done_button_title"/>
 
     <ImageView
         android:layout_width="match_parent"

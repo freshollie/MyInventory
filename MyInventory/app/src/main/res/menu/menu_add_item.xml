@@ -5,7 +5,7 @@
     tools:context="uk.ac.coventry.bello.myinventory.activities.AddItemActivity">
     <item
         android:id="@+id/action_done"
-        android:title="@string/complete_add_item"
+        android:title="@string/done_button_title"
         android:actionLayout="@layout/action_done_toolbar_button"
         app:showAsAction="always|withText"/>
 </menu>

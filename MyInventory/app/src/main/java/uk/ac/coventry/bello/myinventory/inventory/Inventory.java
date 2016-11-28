@@ -17,9 +17,11 @@ import uk.ac.coventry.bello.myinventory.R;
 
 /**
  * Created by Freshollie on 14/11/2016.
+ *
+ * Inventory of items. Used to provide
  */
-
 public class Inventory {
+
     private Map<InventoryItem, Integer> mInventory;
     private static final Inventory INSTANCE = new Inventory();
 
@@ -48,9 +50,10 @@ public class Inventory {
     }
 
     public boolean isItem(String name){
-        Iterator items = mInventory.keySet().iterator();
-        while(items.hasNext()){
-            if(name.toLowerCase().equals(((InventoryItem)items.next()).getName().toLowerCase())){
+        Set<InventoryItem> items = mInventory.keySet();
+
+        for(InventoryItem item: items){
+            if(name.toLowerCase().equals(item.getName().toLowerCase())){
                 return true;
             }
         }
@@ -58,7 +61,7 @@ public class Inventory {
     }
 
     public ArrayList<InventoryItem> getItems(){
-        return new ArrayList<InventoryItem>(mInventory.keySet());
+        return new ArrayList<>(mInventory.keySet());
     }
 
     public void setItem(InventoryItem inventoryItem, int quantity){
@@ -76,7 +79,7 @@ public class Inventory {
     public Set<String> getSaveStringSet(){
         Iterator<InventoryItem> items = mInventory.keySet().iterator();
 
-        Set<String> stringSet = new HashSet<String>();
+        Set<String> stringSet = new HashSet<>();
         while(items.hasNext()){
             JSONObject finalJsonObject = new JSONObject();
             InventoryItem item = items.next();
@@ -94,7 +97,7 @@ public class Inventory {
     }
 
     public void save(Context context){
-        SharedPreferences mPrefs = context.getSharedPreferences(context.getString(R.string.saved_items_key), 0);
+        SharedPreferences mPrefs = context.getSharedPreferences(context.getString(R.string.save_key), 0);
         SharedPreferences.Editor editor = mPrefs.edit();
 
 
@@ -105,7 +108,7 @@ public class Inventory {
     public void load(Context context){
         resetInventory();
 
-        SharedPreferences mPrefs = context.getSharedPreferences(context.getString(R.string.saved_items_key), 0);
+        SharedPreferences mPrefs = context.getSharedPreferences(context.getString(R.string.save_key), Context.MODE_PRIVATE);
 
         Set<String> set = mPrefs.getStringSet(context.getString(R.string.saved_items_key), null);
         if (set != null) {
@@ -148,6 +151,28 @@ public class Inventory {
             }
         }
         return itemNames;
+    }
+
+    public InventoryItem getItemByName(String name){
+        for (InventoryItem item: mInventory.keySet()){
+            if (item.getName().equals(name)){
+                return item;
+            }
+        }
+        return null;
+    }
+
+    public boolean isNotMissing(InventoryItem item){
+        return getQuantity(item) > 0;
+    }
+
+    public boolean isNotMissing(ArrayList<InventoryItem> itemList) {
+        for(InventoryItem item: itemList) {
+            if (!isNotMissing(item)){
+                return false;
+            }
+        }
+        return true;
     }
 
 }

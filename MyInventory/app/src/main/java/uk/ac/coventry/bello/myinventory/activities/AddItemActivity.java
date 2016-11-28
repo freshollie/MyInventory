@@ -7,6 +7,7 @@ import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.app.AlertDialog;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.util.Log;
@@ -22,11 +23,12 @@ public class AddItemActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_item);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        NumberPicker np = (NumberPicker) findViewById(R.id.item_quanitity_picker);
+        NumberPicker np = (NumberPicker) findViewById(R.id.item_quantity_picker);
         np.setMinValue(0);
         np.setMaxValue(99);
         np.setWrapSelectorWheel(false);
@@ -61,8 +63,8 @@ public class AddItemActivity extends AppCompatActivity {
         }
     }
 
-    public int getItemQuanitiy(){
-        return ((NumberPicker)findViewById(R.id.item_quanitity_picker)).getValue();
+    public int getItemQuantity(){
+        return ((NumberPicker)findViewById(R.id.item_quantity_picker)).getValue();
     }
 
     public InventoryItem getItem(){
@@ -86,7 +88,7 @@ public class AddItemActivity extends AppCompatActivity {
         }
 
         if (!inventory.isItem(getItemName())) {
-            inventory.setItem(getItem(), getItemQuanitiy());
+            inventory.setItem(getItem(), getItemQuantity());
             inventory.save(getApplicationContext());
             return true;
         } else {

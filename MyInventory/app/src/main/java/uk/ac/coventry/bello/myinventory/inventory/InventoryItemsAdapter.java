@@ -59,7 +59,7 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
             mAddButton = (ImageButton) v.findViewById(R.id.item_card_add_quantity_button);
             mRemoveButton = (ImageButton) v.findViewById(R.id.item_card_remove_quantity_button);
             mTableLayout = (TableLayout) v.findViewById(R.id.item_card_table);
-            mCardView = (CardView) v.findViewById(R.id.card_view);
+            mCardView = (CardView) v.findViewById(R.id.item_card_view);
 
             mView = v;
         }

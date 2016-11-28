@@ -13,7 +13,7 @@
     <!-- A CardView that contains a TextView -->
     <android.support.v7.widget.CardView
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/item_card_view"
+        android:id="@+id/meal_card_view"
         android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -23,7 +23,7 @@
         card_view:cardPreventCornerOverlap="false"
         android:foreground="?android:attr/selectableItemBackground">
         <TableLayout
-            android:id="@+id/item_card_table"
+            android:id="@+id/meal_card_table"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingLeft="5dp"
@@ -38,14 +38,14 @@
                     android:layout_height="match_parent">
                     <TableRow>
                         <TextView
-                            android:id="@+id/item_card_name_text"
+                            android:id="@+id/meal_card_name_text"
                             android:textAppearance="?android:attr/textAppearanceMedium"
                             android:text="test"
                             android:layout_gravity="start"/>
                     </TableRow>
                     <TableRow>
                         <TextView
-                            android:id="@+id/item_card_price_text"
+                            android:id="@+id/meal_card_price_text"
                             android:textAppearance="?android:attr/textAppearanceSmall"
                             android:text="£1.99"
                             android:layout_gravity="start"/>
@@ -56,26 +56,11 @@
                     android:layout_height="match_parent"
                     android:stretchColumns="*">
                     <TableRow>
-                        <ImageButton
-                            android:id="@+id/item_card_remove_quantity_button"
-                            android:src="@drawable/ic_remove_black_24dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:layout_gravity="center_vertical|end"
-                            android:scaleX="1.5"
-                            android:scaleY="1.5"
-                            />
                         <TextView
-                            android:id="@+id/item_card_quantity_text"
-                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:id="@+id/meal_card_category_text"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
                             android:text="0"
                             android:layout_gravity="center"/>
-                        <ImageButton
-                            android:id="@+id/item_card_add_quantity_button"
-                            android:src="@drawable/ic_add_black_24dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:layout_gravity="center_vertical|start"
-                            android:scaleX="1.5"
-                            android:scaleY="1.5"/>
                     </TableRow>
                 </TableLayout>
 
