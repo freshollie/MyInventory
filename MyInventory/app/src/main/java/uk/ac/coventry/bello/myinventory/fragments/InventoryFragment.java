@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -84,8 +85,10 @@ public class InventoryFragment extends MyInventoryFragment {
         mMainActivity.setFabOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent mIntent = new Intent(InventoryFragment.this.getActivity(), AddItemActivity.class);
-                startActivity(mIntent);
+                AddItemFragment addItemFragment = new AddItemFragment();
+
+                FragmentManager fragmentManager = InventoryFragment.this.getActivity().getSupportFragmentManager();
+                addItemFragment.show(fragmentManager, "AddItemFragment");
             }
         });
     }

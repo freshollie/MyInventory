@@ -13,8 +13,8 @@ tools:context="uk.ac.coventry.bello.myinventory.activities.MainActivity"
 tools:showIn="@layout/activity_add_item">
 
     <GridLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true">
         <EditText
