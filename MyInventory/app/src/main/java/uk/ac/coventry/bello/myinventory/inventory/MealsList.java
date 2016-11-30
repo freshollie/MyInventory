@@ -40,6 +40,15 @@ public class MealsList extends ArrayList<Meal>{
         return stringSet;
     }
 
+    public boolean isMealName(String name){
+        for (Meal meal: this){
+            if (meal.getName().toLowerCase().equals(name.toLowerCase())){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void save(Context context){
         SharedPreferences mPrefs = context.getSharedPreferences(context.getString(R.string.save_key), 0);
         SharedPreferences.Editor editor = mPrefs.edit();
@@ -72,7 +81,7 @@ public class MealsList extends ArrayList<Meal>{
 
                     for (int i = 0; i < ingredientsList.length(); i++) {
 
-                        InventoryItem ingredient = mInventory.getItemByName(ingredientsList.getString(i));
+                        InventoryItem ingredient = mInventory.getItemFromName(ingredientsList.getString(i));
 
                         if (ingredient != null) {
                             ingredients.add(ingredient);

@@ -25,11 +25,9 @@ import java.text.DateFormat;
 import java.util.Calendar;
 
 import uk.ac.coventry.bello.myinventory.R;
-import uk.ac.coventry.bello.myinventory.activities.AddItemActivity;
-import uk.ac.coventry.bello.myinventory.activities.AddMealActivity;
 import uk.ac.coventry.bello.myinventory.activities.MainActivity;
 import uk.ac.coventry.bello.myinventory.inventory.Inventory;
-import uk.ac.coventry.bello.myinventory.inventory.InventoryItemsAdapter;
+import uk.ac.coventry.bello.myinventory.adapters.InventoryItemsAdapter;
 
 
 public class InventoryFragment extends MyInventoryFragment {
@@ -72,6 +70,13 @@ public class InventoryFragment extends MyInventoryFragment {
 
         setUpInventoryListAdapter();
 
+        setUpToolbarLayout();
+
+        setUpFabAction();
+
+    }
+
+    public void setUpToolbarLayout() {
         mMainActivity.setAppBarColor(
                 ContextCompat.getColor(getContext(), R.color.colorPrimary)
         );
@@ -81,16 +86,21 @@ public class InventoryFragment extends MyInventoryFragment {
 
         mMainActivity.setMenuLayout(R.menu.menu_main_inventory);
         mMainActivity.invalidateOptionsMenu();
+    }
 
+    public void setUpFabAction() {
         mMainActivity.setFabOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AddItemFragment addItemFragment = new AddItemFragment();
+                final AddItemFragment addItemFragment = new AddItemFragment();
 
                 FragmentManager fragmentManager = InventoryFragment.this.getActivity().getSupportFragmentManager();
+
+                addItemFragment.setAdapter(mAdapter);
                 addItemFragment.show(fragmentManager, "AddItemFragment");
             }
         });
+
     }
 
     public void setUpInventoryListAdapter(){

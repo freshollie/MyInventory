@@ -1,10 +1,9 @@
-package uk.ac.coventry.bello.myinventory.inventory;
+package uk.ac.coventry.bello.myinventory.adapters;
 
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -18,6 +17,8 @@ import java.text.DecimalFormat;
 
 import uk.ac.coventry.bello.myinventory.R;
 import uk.ac.coventry.bello.myinventory.fragments.InventoryFragment;
+import uk.ac.coventry.bello.myinventory.inventory.Inventory;
+import uk.ac.coventry.bello.myinventory.inventory.InventoryItem;
 
 
 /**
@@ -81,6 +82,11 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
         notifyDataSetChanged();
     }
 
+    public void notifyInventoryChanged() {
+        mItemList = mInventory.getItems();
+        notifyDataSetChanged();
+    }
+
     public boolean isDeleteMode(){
         return deleteMode;
     }
@@ -120,8 +126,7 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
         resetDeleteItems();
 
         mInventory.save(mParentInventoryFragment.getContext());
-        mItemList = mInventory.getItems();
-        notifyDataSetChanged();
+        notifyInventoryChanged();
     }
 
     // Create new views (invoked by the layout manager)

@@ -1,10 +1,9 @@
-package uk.ac.coventry.bello.myinventory.inventory;
+package uk.ac.coventry.bello.myinventory.adapters;
 
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.view.ViewGroup;
@@ -12,11 +11,13 @@ import android.view.View;
 import android.view.LayoutInflater;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.text.DecimalFormat;
 
 import uk.ac.coventry.bello.myinventory.R;
 import uk.ac.coventry.bello.myinventory.fragments.MealsFragment;
+import uk.ac.coventry.bello.myinventory.inventory.Inventory;
+import uk.ac.coventry.bello.myinventory.inventory.Meal;
+import uk.ac.coventry.bello.myinventory.inventory.MealsList;
 
 
 /**

@@ -19,8 +19,14 @@ import uk.ac.coventry.bello.myinventory.R;
 
 public class MealCategories extends ArrayList<String> {
 
-    public MealCategories(){
+    private static final MealCategories INSTANCE = new MealCategories();
+
+    private MealCategories(){
         clear();
+    }
+
+    public static MealCategories getInstance() {
+        return INSTANCE;
     }
 
     public Set<String> getSaveStringSet(){
@@ -30,6 +36,15 @@ public class MealCategories extends ArrayList<String> {
             stringSet.add(category);
         }
         return stringSet;
+    }
+
+    public String getValidCategory(String name) {
+        for (String category: this) {
+            if(category.toLowerCase().equals(name.toLowerCase())) {
+                return category;
+            }
+        }
+        return name;
     }
 
     public void save(Context context){

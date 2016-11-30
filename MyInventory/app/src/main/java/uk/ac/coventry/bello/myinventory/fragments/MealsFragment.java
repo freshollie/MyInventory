@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -19,10 +20,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import uk.ac.coventry.bello.myinventory.R;
-import uk.ac.coventry.bello.myinventory.activities.AddItemActivity;
 import uk.ac.coventry.bello.myinventory.activities.AddMealActivity;
 import uk.ac.coventry.bello.myinventory.activities.MainActivity;
-import uk.ac.coventry.bello.myinventory.inventory.MealsAdapter;
+import uk.ac.coventry.bello.myinventory.adapters.MealsAdapter;
 import uk.ac.coventry.bello.myinventory.inventory.MealsList;
 
 
@@ -69,6 +69,12 @@ public class MealsFragment extends MyInventoryFragment {
 
         setUpMealsListAdapter();
 
+        setUpToolbarLayout();
+
+        setUpFabAction();
+    }
+
+    public void setUpToolbarLayout() {
         mMainActivity.setAppBarColor(
                 ContextCompat.getColor(getContext(), R.color.colorSecondary)
         );
@@ -78,14 +84,21 @@ public class MealsFragment extends MyInventoryFragment {
 
         mMainActivity.setMenuLayout(R.menu.menu_main_meals_list);
         mMainActivity.invalidateOptionsMenu();
+    }
 
+    public void setUpFabAction() {
         mMainActivity.setFabOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent mIntent = new Intent(MealsFragment.this.getActivity(), AddMealActivity.class);
-                startActivity(mIntent);
+                final AddMealFragment addMealFragment = new AddMealFragment();
+
+                FragmentManager fragmentManager = MealsFragment.this.getActivity().getSupportFragmentManager();
+
+                addMealFragment.setAdapter(mAdapter);
+                addMealFragment.show(fragmentManager, "AddMealFragment");
             }
         });
+
     }
 
     public void setUpMealsListAdapter(){

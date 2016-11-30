@@ -16,6 +16,13 @@
     <string name="done_button_title">Done</string>
     <string name="add_button_text">Add</string>
     <string name="cancel_button_text">Cancel</string>
+    <string name="new_category_text">New Category</string>
+
+    <string name="not_valid_data_message">Please enter valid data</string>
+    <string name="no_ingredients_message">Please select some ingredients</string>
+    <string name="no_category_message">Please select a category</string>
+    <string name="name_already_exist">That name already exists</string>
+    <string name="not_valid_name">Please enter a valid name</string>
 
     <string name="item_card_price_text">£%1$s</string>
 
@@ -45,7 +52,6 @@
     <string name="navigation_drawer_settings_option">Settings</string>
     <string name="navigation_drawer_inventory_option">Inventory</string>
     <string name="navigation_drawer_meals_option">Meals</string>
-
 
     <string name="no_google_keep">Google Keep is not installed</string>
     <string name="no_shopping_items">There are no items that you need to shop for</string>

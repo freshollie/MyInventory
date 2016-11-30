@@ -60,15 +60,24 @@ public class Inventory {
         return false;
     }
 
-    public ArrayList<InventoryItem> getItems(){
+    public ArrayList<InventoryItem> getItems() {
         return new ArrayList<>(mInventory.keySet());
     }
 
-    public void setItem(InventoryItem inventoryItem, int quantity){
+    public ArrayList<String> getItemNames(){
+        ArrayList<String> itemNames = new ArrayList<>();
+
+        for (InventoryItem item: getItems()) {
+            itemNames.add(item.getName());
+        }
+
+        return itemNames;
+    }
+    public void setItem(InventoryItem inventoryItem, int quantity) {
         mInventory.put(inventoryItem, quantity);
     }
 
-    public int getQuantity(InventoryItem item){
+    public int getQuantity(InventoryItem item) {
         if(mInventory.containsKey(item)){
             return mInventory.get(item);
         } else {
@@ -153,7 +162,7 @@ public class Inventory {
         return itemNames;
     }
 
-    public InventoryItem getItemByName(String name){
+    public InventoryItem getItemFromName(String name){
         for (InventoryItem item: mInventory.keySet()){
             if (item.getName().equals(name)){
                 return item;

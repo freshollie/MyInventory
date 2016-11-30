@@ -4,17 +4,16 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 
 import uk.ac.coventry.bello.myinventory.R;
+import uk.ac.coventry.bello.myinventory.adapters.InventoryItemsAdapter;
 import uk.ac.coventry.bello.myinventory.inventory.Inventory;
 import uk.ac.coventry.bello.myinventory.inventory.InventoryItem;
 
@@ -25,7 +24,7 @@ import uk.ac.coventry.bello.myinventory.inventory.InventoryItem;
 public class AddItemFragment extends DialogFragment {
     private final String TAG = "AddItemFragment";
     private View mView;
-    private boolean shouldCloseFlag;
+    private InventoryItemsAdapter mAdapter;
 
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -34,9 +33,8 @@ public class AddItemFragment extends DialogFragment {
 
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
-        mView = inflater.inflate(R.layout.add_item_dialog, null);
+        mView = inflater.inflate(R.layout.add_item_dialog_content, null);
         setUpNumberPicker();
-        shouldCloseFlag = true;
 
         builder.setView(mView)
                 // Add action buttons
@@ -63,7 +61,7 @@ public class AddItemFragment extends DialogFragment {
         {
             d.setCanceledOnTouchOutside(true);
 
-            Button positiveButton = (Button) d.getButton(Dialog.BUTTON_POSITIVE);
+            Button positiveButton = d.getButton(Dialog.BUTTON_POSITIVE);
             positiveButton.setOnClickListener(new View.OnClickListener()
             {
                 @Override
@@ -71,12 +69,18 @@ public class AddItemFragment extends DialogFragment {
                 {
                     if (saveItem()) {
                         dismiss();
+                        if (mAdapter != null) {
+                            mAdapter.notifyInventoryChanged();
+                        }
                     }
                 }
             });
         }
     }
 
+    public void setAdapter(InventoryItemsAdapter adapter) {
+        mAdapter = adapter;
+    }
 
     public void setUpNumberPicker() {
         NumberPicker np = (NumberPicker) mView.findViewById(R.id.item_quantity_picker);
