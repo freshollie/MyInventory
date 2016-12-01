@@ -39,6 +39,7 @@
     <string name="sort_by_name">Sort by name</string>
     <string name="delete_selected_items">Delete Selected Items</string>
     <string name="delete_selected_meals">Delete Selected Meals</string>
+    <string name="make_meal_of_items">Make meal using items</string>
 
     <string name="title_activity_meal_list">MealListActivity</string>
     <string name="title_activity_meal_maker">MealMakerActivity</string>

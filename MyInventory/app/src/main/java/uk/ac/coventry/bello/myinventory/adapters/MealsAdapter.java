@@ -16,6 +16,7 @@ import java.text.DecimalFormat;
 import uk.ac.coventry.bello.myinventory.R;
 import uk.ac.coventry.bello.myinventory.fragments.MealsFragment;
 import uk.ac.coventry.bello.myinventory.inventory.Inventory;
+import uk.ac.coventry.bello.myinventory.inventory.InventoryItem;
 import uk.ac.coventry.bello.myinventory.inventory.Meal;
 import uk.ac.coventry.bello.myinventory.inventory.MealsList;
 
@@ -29,7 +30,7 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.MealViewHold
     private MealsList mMealsList;
     private MealsFragment mParentMealsFragment;
     private String TAG = "MealsAdapter";
-    private ArrayList<Integer> deleteItems;
+    private ArrayList<Integer> selectedItems;
     private boolean deleteMode;
 
     public String SORT_BY_NAME = "sort_by_name";
@@ -67,54 +68,64 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.MealViewHold
         mMealsList = mealsListObject;
         mParentMealsFragment = mealFragment;
         deleteMode = false;
-        resetDeleteItems();
+        resetSelectedItems();
     }
 
-    public void setDeleteMode(boolean mode) {
-        resetDeleteItems();
+    public void setSelectMode(boolean mode) {
+        resetSelectedItems();
         deleteMode = mode;
-        mParentMealsFragment.onDeleteModeChange();
+        mParentMealsFragment.onSelectModeChanged();
         notifyDataSetChanged();
     }
 
-    public boolean isDeleteMode(){
+    public boolean isSelectMode(){
         return deleteMode;
     }
 
-    public void resetDeleteItems(){
-        deleteItems = new ArrayList<>();
+    public void resetSelectedItems(){
+        selectedItems = new ArrayList<>();
     }
 
-    public void appendDeleteItem(int i){
-        deleteItems.add(i);
+    public void appendSelectedItem(int i){
+        selectedItems.add(i);
         notifyItemChanged(i);
     }
 
-    public void removeDeleteItem(int i){
-        deleteItems.remove((Object)i);
+    public void removeSelectedItem(int i){
+        selectedItems.remove((Object)i);
 
         notifyItemChanged(i);
 
-        if(deleteItems.size() < 1) {
-            setDeleteMode(false);
+        if(selectedItems.size() < 1) {
+            setSelectMode(false);
 
         }
     }
 
-    public ArrayList<Integer> getDeleteItems(){
-        return deleteItems;
+    public ArrayList<Integer> getSelectedItemIndexes(){
+        return selectedItems;
+    }
+
+    public ArrayList<Meal> getSelectedItems() {
+        ArrayList<Meal> items = new ArrayList<>();
+
+        for (int i: getSelectedItemIndexes()) {
+            items.add(mMealsList.get(i));
+        }
+
+        return items;
     }
 
     public void setSort(String sort){
 
     }
 
-    public void onRemoveSelectedItems(){
-        for(int i: deleteItems){
+    public void onDeleteSelectedItems(){
+        for(int i: selectedItems){
             Meal meal = mMealsList.get(i);
             mMealsList.remove(meal);
         }
-        resetDeleteItems();
+        resetSelectedItems();
 
         mMealsList.save(mParentMealsFragment.getContext());
         notifyDataSetChanged();
@@ -153,10 +164,10 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.MealViewHold
 
         // Change the card colour based on if the user has highlighted it for deletion
 
-        if(deleteItems.contains(position)) {
+        if(selectedItems.contains(position)) {
             holder.mCardView.setCardBackgroundColor(ContextCompat.getColor(mParentMealsFragment.getContext(), android.R.color.darker_gray));
 
-        } else if (!Inventory.getInstance().isNotMissing(meal.getIngredients()) && (!isDeleteMode())){ // We don't have all the ingredients for this item
+        } else if (!Inventory.getInstance().isNotMissing(meal.getIngredients()) && (!isSelectMode())){ // We don't have all the ingredients for this item
             holder.mCardView.setCardBackgroundColor(Color.GRAY);
         } else {
             holder.mCardView.setCardBackgroundColor(Color.WHITE);
@@ -168,12 +179,12 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.MealViewHold
         holder.mTableLayout.setOnLongClickListener(null);
 
         // Set these click listeners if we are not in delete mode
-        if (!isDeleteMode()) {
+        if (!isSelectMode()) {
             holder.mTableLayout.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    setDeleteMode(true);
-                    appendDeleteItem(holderPosition);
+                    setSelectMode(true);
+                    appendSelectedItem(holderPosition);
                     return true;
                 }
             });
@@ -182,14 +193,14 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.MealViewHold
         holder.mTableLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isDeleteMode()){
+                if(isSelectMode()){
 
-                    if(getDeleteItems().contains(holderPosition)) {
+                    if(getSelectedItemIndexes().contains(holderPosition)) {
 
-                        removeDeleteItem(holderPosition);
+                        removeSelectedItem(holderPosition);
 
                     } else {
-                        appendDeleteItem(holderPosition);
+                        appendSelectedItem(holderPosition);
                     }
                 } else {
                     holder.mView.findViewById(R.id.item_card_table);

@@ -44,6 +44,10 @@ public class AddMealFragment extends DialogFragment {
     private View mView;
     private MealsAdapter mAdapter;
     private int numIngredientSpinners = 0;
+    private ArrayList<InventoryItem> presetIngredients;
+    private AppCompatSpinner mLastSpinner;
+    private ArrayList<String> ingredientsList;
+    private String[] ingredientsNameArray;
 
 
     @Override
@@ -68,15 +72,19 @@ public class AddMealFragment extends DialogFragment {
 
         builder.setCancelable(true);
 
+        ingredientsList = Inventory.getInstance().getItemNames();
+        Collections.sort(ingredientsList);
+        ingredientsList.add(0, getString(R.string.input_select_ingredient_text));
+        ingredientsNameArray = ingredientsList.toArray(new String[0]);
+
         fillCategoriesSpinner();
 
-        for (int i = 0; i < 1 ; i++) {
-            newIngredientSpinner();
-        }
+        newIngredientSpinner();
+        setIngredientsSpinners();
+
 
         return builder.create();
     }
-
 
     @Override
     public void onStart() {
@@ -105,9 +113,23 @@ public class AddMealFragment extends DialogFragment {
         }
     }
 
+    public void setIngredientsSpinners() {
+        if (presetIngredients != null) {
+            for (InventoryItem ingredient : presetIngredients) {
+                mLastSpinner.setSelection(ingredientsList.indexOf(ingredient.getName()));
+                newIngredientSpinner();
+            }
+
+        } else {
+            for (int i = 0; i < 0; i++) {
+                newIngredientSpinner();
+            }
+        }
+    }
+
     public void fillCategoriesSpinner() {
         AppCompatSpinner categorySpinner = (AppCompatSpinner) mView.findViewById(R.id.input_category_spinner);
-
+        MealCategories.getInstance().load(getContext());
         ArrayList<String> categoriesSpinnerList = new ArrayList<>(MealCategories.getInstance());
 
         Collections.sort(categoriesSpinnerList);
@@ -146,16 +168,12 @@ public class AddMealFragment extends DialogFragment {
         numIngredientSpinners ++;
         final int ingredientSpinnerNum = numIngredientSpinners;
         AppCompatSpinner spinner = new AppCompatSpinner(getActivity());
-        ArrayList<String> ingredientsList = Inventory.getInstance().getItemNames();
 
-        Collections.sort(ingredientsList);
-
-        ingredientsList.add(0, getString(R.string.input_select_ingredient_text));
 
         ArrayAdapter<String> ingredientsAdapter = new ArrayAdapter<>(
                 getActivity(),
                 android.R.layout.simple_spinner_item,
-                ingredientsList.toArray(new String[0])
+                ingredientsNameArray
         );
 
         ingredientsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -178,6 +196,7 @@ public class AddMealFragment extends DialogFragment {
 
         LinearLayout ingredientsSpinnerList = (LinearLayout) mView.findViewById(R.id.meal_ingredients_spinner_list);
         ingredientsSpinnerList.addView(spinner);
+        mLastSpinner = spinner;
 
     }
 
@@ -217,6 +236,10 @@ public class AddMealFragment extends DialogFragment {
         }
 
         return ingredientsList;
+    }
+
+    public void setIngredients(ArrayList<InventoryItem> ingredients) {
+        presetIngredients = ingredients;
     }
 
     private boolean saveMeal() {

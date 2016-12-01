@@ -22,12 +22,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import uk.ac.coventry.bello.myinventory.R;
 import uk.ac.coventry.bello.myinventory.activities.MainActivity;
 import uk.ac.coventry.bello.myinventory.inventory.Inventory;
 import uk.ac.coventry.bello.myinventory.adapters.InventoryItemsAdapter;
+import uk.ac.coventry.bello.myinventory.inventory.InventoryItem;
 
 
 public class InventoryFragment extends MyInventoryFragment {
@@ -150,13 +152,13 @@ public class InventoryFragment extends MyInventoryFragment {
 
     }
 
-    public void onDeleteModeChange(){
-        if(mAdapter.isDeleteMode()) {
+    public void onSelectModeChanged(){
+        if(mAdapter.isSelectMode()) {
             mActivity.findViewById(R.id.main_activity_content_layout).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Log.d(TAG, "Click");
-                    mAdapter.setDeleteMode(false);
+                    mAdapter.setSelectMode(false);
                 }
             });
         } else {
@@ -166,8 +168,8 @@ public class InventoryFragment extends MyInventoryFragment {
         int menuLayout;
 
         if(mAdapter!=null){
-            if(mAdapter.isDeleteMode()){
-                menuLayout = R.menu.menu_main_delete;
+            if(mAdapter.isSelectMode()){
+                menuLayout = R.menu.menu_main_inventory_highlight;
 
             } else {
                 menuLayout = R.menu.menu_main_inventory;
@@ -188,8 +190,8 @@ public class InventoryFragment extends MyInventoryFragment {
     }
 
     public boolean onBackPressed(){
-        if(mAdapter.isDeleteMode()){ // Turn the delete mode off if we are in delete mode
-            mAdapter.setDeleteMode(false);
+        if(mAdapter.isSelectMode()){ // Turn the delete mode off if we are in delete mode
+            mAdapter.setSelectMode(false);
             return true;
         }
         return false;
@@ -226,27 +228,34 @@ public class InventoryFragment extends MyInventoryFragment {
 
             } catch (Exception e) {
 
-                final Snackbar bar = Snackbar.make(mActivity.findViewById(R.id.main_activity_content_layout), getContext().getString(R.string.no_google_keep), Snackbar.LENGTH_LONG)
+                Snackbar.make(mActivity.findViewById(R.id.main_activity_content_layout), getContext().getString(R.string.no_google_keep), Snackbar.LENGTH_LONG)
                         .setAction("Dismiss", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                             }
-                        });
-
-                bar.show();
+                        })
+                        .show();
             }
 
         } else {
-            final Snackbar bar = Snackbar.make(mActivity.findViewById(R.id.main_activity_content_layout), getContext().getString(R.string.no_shopping_items), Snackbar.LENGTH_LONG)
+            Snackbar.make(mActivity.findViewById(R.id.main_activity_content_layout), getContext().getString(R.string.no_shopping_items), Snackbar.LENGTH_LONG)
                     .setAction("Dismiss", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
 
                         }
-                    });
-
-            bar.show();
+                    })
+                    .show();
         }
+    }
+
+    public void makeMealFromItems() {
+        ArrayList<InventoryItem> ingredients = mAdapter.getSelectedItems();
+        mAdapter.setSelectMode(false);
+        onSelectModeChanged();
+
+        mMainActivity.setCurrentFragmentId(MainActivity.MEALS_FRAGMENT_MENU_ID);
+        ((MealsFragment) mMainActivity.getCurrentFragment()).setInitalIngredients(ingredients);
     }
 
     @Override
@@ -264,12 +273,16 @@ public class InventoryFragment extends MyInventoryFragment {
                         .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                mAdapter.onRemoveSelectedItems();
-                                mAdapter.setDeleteMode(false);
+                                mAdapter.onDeleteSelectedItems();
+                                mAdapter.setSelectMode(false);
                                 onInventoryChanged();
                             }
                         })
                         .show();
+                return true;
+
+            case R.id.action_make_meal:
+                makeMealFromItems();
                 return true;
         }
         return false;

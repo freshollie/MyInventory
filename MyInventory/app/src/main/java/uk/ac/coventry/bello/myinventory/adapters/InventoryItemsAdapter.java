@@ -30,8 +30,8 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
     private List<InventoryItem> mItemList;
     private InventoryFragment mParentInventoryFragment;
     private String TAG = "InventoryItemAdapter";
-    private ArrayList<Integer> deleteItems;
-    private boolean deleteMode;
+    private ArrayList<Integer> selectedItems;
+    private boolean selectMode;
 
     public String SORT_BY_NAME = "sort_by_name";
     public String SORT_BY_PRICE = "sort_by_price";
@@ -71,14 +71,14 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
         mInventory = inventory;
         mItemList = inventory.getItems();
         mParentInventoryFragment = inventoryFragment;
-        deleteMode = false;
-        resetDeleteItems();
+        selectMode = false;
+        resetSelectedItems();
     }
 
-    public void setDeleteMode(boolean mode) {
-        resetDeleteItems();
-        deleteMode = mode;
-        mParentInventoryFragment.onDeleteModeChange();
+    public void setSelectMode(boolean mode) {
+        resetSelectedItems();
+        selectMode = mode;
+        mParentInventoryFragment.onSelectModeChanged();
         notifyDataSetChanged();
     }
 
@@ -87,43 +87,57 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
         notifyDataSetChanged();
     }
 
-    public boolean isDeleteMode(){
-        return deleteMode;
+    public boolean isSelectMode(){
+        return selectMode;
     }
 
-    public void resetDeleteItems(){
-        deleteItems = new ArrayList<>();
+    public void resetSelectedItems(){
+        selectedItems = new ArrayList<>();
     }
 
-    public void appendDeleteItem(int i){
-        deleteItems.add(i);
+    public void appendSelectedItem(int i){
+        selectedItems.add(i);
         notifyItemChanged(i);
     }
 
-    public void removeDeleteItem(int i){
-        deleteItems.remove((Object)i);
+    public void removeSelectedItem(int i){
+        selectedItems.remove((Object)i);
         notifyItemChanged(i);
 
-        if(deleteItems.size() < 1) {
-            setDeleteMode(false);
-
+        if(selectedItems.size() < 1) {
+            setSelectMode(false);
         }
     }
 
-    public ArrayList<Integer> getDeleteItems(){
-        return deleteItems;
+    public ArrayList<Integer> getSelectedItemIndexes(){
+        return selectedItems;
     }
+
+    public ArrayList<InventoryItem> getSelectedItems() {
+        ArrayList<InventoryItem> items = new ArrayList<>();
+
+        for (int i: getSelectedItemIndexes()) {
+            items.add(mItemList.get(i));
+        }
+
+        return items;
+    }
+
+    public void deleteSelectedItems() {
+        for(int i: getSelectedItemIndexes()){
+            InventoryItem item = mItemList.get(i);
+            mInventory.removeItem(item);
+        }
+    }
+
 
     public void setSort(String sort){
 
     }
 
-    public void onRemoveSelectedItems(){
-        for(int i: deleteItems){
-            InventoryItem item = mItemList.get(i);
-            mInventory.removeItem(item);
-        }
-        resetDeleteItems();
+    public void onDeleteSelectedItems(){
+        deleteSelectedItems();
+        resetSelectedItems();
 
         mInventory.save(mParentInventoryFragment.getContext());
         notifyInventoryChanged();
@@ -162,7 +176,7 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
 
         // Change the card colour based on if the user has highlighted it for deletion
 
-        if(deleteItems.contains(position)){
+        if(selectedItems.contains(position)){
             holder.mCardView.setCardBackgroundColor(ContextCompat.getColor(mParentInventoryFragment.getContext(), android.R.color.darker_gray));
         } else {
             holder.mCardView.setCardBackgroundColor(Color.WHITE);
@@ -176,7 +190,7 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
         holder.mTableLayout.setOnLongClickListener(null);
 
         // Set these click listeners if we are not in delete mode
-        if (!isDeleteMode()) {
+        if (!isSelectMode()) {
             holder.mAddButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -201,8 +215,8 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
             holder.mTableLayout.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    setDeleteMode(true);
-                    appendDeleteItem(holderPosition);
+                    setSelectMode(true);
+                    appendSelectedItem(holderPosition);
                     return true;
                 }
             });
@@ -211,14 +225,14 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
         holder.mTableLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isDeleteMode()){
+                if(isSelectMode()){
 
-                    if(getDeleteItems().contains(holderPosition)) {
+                    if(getSelectedItems().contains(holderPosition)) {
 
-                        removeDeleteItem(holderPosition);
+                        removeSelectedItem(holderPosition);
 
                     } else {
-                        appendDeleteItem(holderPosition);
+                        appendSelectedItem(holderPosition);
                     }
                 } else {
                     holder.mView.findViewById(R.id.item_card_table);

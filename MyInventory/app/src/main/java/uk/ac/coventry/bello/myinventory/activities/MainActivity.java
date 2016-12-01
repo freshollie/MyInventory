@@ -20,7 +20,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.content.Intent;
 import android.os.Handler;
 
 import uk.ac.coventry.bello.myinventory.fragments.InventoryFragment;
@@ -33,8 +32,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private final String TAG = "MainActivity";
-    private final int INVENTORY_FRAGMENT_MENU_ID = 0;
-    private final int MEALS_FRAGMENT_MENU_ID = 1;
+    public static final int INVENTORY_FRAGMENT_MENU_ID = 0;
+    public static final int MEALS_FRAGMENT_MENU_ID = 1;
 
     private Integer menuLayout;
     private FloatingActionButton mFab;
@@ -189,7 +188,7 @@ public class MainActivity extends AppCompatActivity
 
         if(menuLayout != 0) {
 
-            if (menuLayout != R.menu.menu_main_delete) {
+            if (menuLayout != R.menu.menu_main_inventory_highlight && menuLayout != R.menu.menu_main_delete) {
 
                 mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                     @Override
@@ -244,6 +243,11 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    public void setCurrentFragmentId(int i) {
+        mCurrentFragmentId = i;
+        onLoadCurrentFragment();
+    }
+
     public MyInventoryFragment getNewCurrentFragmentInstance(){
         switch(mCurrentFragmentId){
             case INVENTORY_FRAGMENT_MENU_ID:
@@ -252,6 +256,10 @@ public class MainActivity extends AppCompatActivity
                 return new MealsFragment();
         }
         return null;
+    }
+
+    public MyInventoryFragment getCurrentFragment() {
+        return mCurrentFragment;
     }
 
     public String getCurrentFragmentTitle(){
@@ -361,7 +369,5 @@ public class MainActivity extends AppCompatActivity
 
         onLoadCurrentFragment();
         return true;
-
-
     }
 }

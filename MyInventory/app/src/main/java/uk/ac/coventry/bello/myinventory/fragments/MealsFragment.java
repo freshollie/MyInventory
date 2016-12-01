@@ -2,7 +2,6 @@ package uk.ac.coventry.bello.myinventory.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -19,10 +18,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import uk.ac.coventry.bello.myinventory.R;
-import uk.ac.coventry.bello.myinventory.activities.AddMealActivity;
 import uk.ac.coventry.bello.myinventory.activities.MainActivity;
 import uk.ac.coventry.bello.myinventory.adapters.MealsAdapter;
+import uk.ac.coventry.bello.myinventory.inventory.InventoryItem;
 import uk.ac.coventry.bello.myinventory.inventory.MealsList;
 
 
@@ -38,6 +39,7 @@ public class MealsFragment extends MyInventoryFragment {
     private TextView mEmptyView;
     private MainActivity mMainActivity;
     private FragmentActivity mActivity;
+    private ArrayList<InventoryItem> initialIngredients;
 
     private OnFragmentInteractionListener mListener;
 
@@ -72,6 +74,11 @@ public class MealsFragment extends MyInventoryFragment {
         setUpToolbarLayout();
 
         setUpFabAction();
+
+        if (initialIngredients != null) {
+            launchAddMealFragment(initialIngredients);
+            initialIngredients = null;
+        }
     }
 
     public void setUpToolbarLayout() {
@@ -86,16 +93,32 @@ public class MealsFragment extends MyInventoryFragment {
         mMainActivity.invalidateOptionsMenu();
     }
 
+    public void launchAddMealFragment(ArrayList<InventoryItem> initialIngredients){
+        AddMealFragment addMealFragment = new AddMealFragment();
+
+        if (initialIngredients != null) {
+            addMealFragment.setIngredients(initialIngredients);
+        }
+
+        FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
+
+        addMealFragment.setAdapter(mAdapter);
+        addMealFragment.show(fragmentManager, "AddMealFragment");
+    }
+
+    public void setInitalIngredients(ArrayList<InventoryItem> ingredients){
+        initialIngredients = ingredients;
+        if (mActivity != null) {
+            launchAddMealFragment(ingredients);
+            initialIngredients = null;
+        }
+    }
+
     public void setUpFabAction() {
         mMainActivity.setFabOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final AddMealFragment addMealFragment = new AddMealFragment();
-
-                FragmentManager fragmentManager = MealsFragment.this.getActivity().getSupportFragmentManager();
-
-                addMealFragment.setAdapter(mAdapter);
-                addMealFragment.show(fragmentManager, "AddMealFragment");
+                launchAddMealFragment(null);
             }
         });
 
@@ -147,13 +170,13 @@ public class MealsFragment extends MyInventoryFragment {
 
     }
 
-    public void onDeleteModeChange(){
-        if(mAdapter.isDeleteMode()) {
+    public void onSelectModeChanged(){
+        if(mAdapter.isSelectMode()) {
             mActivity.findViewById(R.id.main_activity_content_layout).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Log.d(TAG, "Click");
-                    mAdapter.setDeleteMode(false);
+                    mAdapter.setSelectMode(false);
                 }
             });
         } else {
@@ -163,7 +186,7 @@ public class MealsFragment extends MyInventoryFragment {
         int menuLayout;
 
         if(mAdapter!=null){
-            if(mAdapter.isDeleteMode()){
+            if(mAdapter.isSelectMode()){
                 menuLayout = R.menu.menu_main_delete;
 
             } else {
@@ -185,8 +208,8 @@ public class MealsFragment extends MyInventoryFragment {
     }
 
     public boolean onBackPressed(){
-        if(mAdapter.isDeleteMode()){ // Turn the delete mode off if we are in delete mode
-            mAdapter.setDeleteMode(false);
+        if(mAdapter.isSelectMode()){ // Turn the delete mode off if we are in delete mode
+            mAdapter.setSelectMode(false);
             return true;
         }
         return false;
@@ -218,8 +241,8 @@ public class MealsFragment extends MyInventoryFragment {
                         .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                mAdapter.onRemoveSelectedItems();
-                                mAdapter.setDeleteMode(false);
+                                mAdapter.onDeleteSelectedItems();
+                                mAdapter.setSelectMode(false);
                                 onMealsListChanged();
                             }
                         })
