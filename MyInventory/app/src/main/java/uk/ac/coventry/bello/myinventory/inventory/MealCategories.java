@@ -39,6 +39,10 @@ public class MealCategories extends ArrayList<String> {
     }
 
     public String getValidCategory(String name) {
+        if (name == null){
+            return name;
+        }
+
         for (String category: this) {
             if(category.toLowerCase().equals(name.toLowerCase())) {
                 return category;

@@ -288,6 +288,7 @@ public class MainActivity extends AppCompatActivity
         // just close the navigation drawer
 
         if (mFragmentManager.findFragmentByTag(getCurrentFragmentTitle()) != null || getNewCurrentFragmentInstance() == null){
+            mCurrentFragment = (MyInventoryFragment) mFragmentManager.findFragmentByTag(getCurrentFragmentTitle());
             mDrawer.closeDrawers();
             return;
         }
@@ -328,7 +329,11 @@ public class MainActivity extends AppCompatActivity
 
         } else if(mCurrentFragment != null) {
             if (!mCurrentFragment.onBackPressed()) { // If the fragment didn't do anything with the press
-                super.onBackPressed();
+                if (mCurrentFragmentId != INVENTORY_FRAGMENT_MENU_ID) {
+                    setCurrentFragmentId(INVENTORY_FRAGMENT_MENU_ID);
+                } else {
+                    super.onBackPressed();
+                }
             }
         } else {
             super.onBackPressed();
@@ -355,19 +360,17 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         switch (item.getItemId()){
             case R.id.nav_inventory:
-                mCurrentFragmentId = INVENTORY_FRAGMENT_MENU_ID;
-                break;
+                setCurrentFragmentId(INVENTORY_FRAGMENT_MENU_ID);
+                return true;
 
             case R.id.nav_meals:
-                mCurrentFragmentId = MEALS_FRAGMENT_MENU_ID;
-                break;
+                setCurrentFragmentId(MEALS_FRAGMENT_MENU_ID);
+                return true;
 
             case R.id.nav_manage:
                 mDrawer.closeDrawer(GravityCompat.START);
                 return true;
         }
-
-        onLoadCurrentFragment();
-        return true;
+        return false;
     }
 }
