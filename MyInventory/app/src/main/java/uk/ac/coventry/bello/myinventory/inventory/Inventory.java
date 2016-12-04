@@ -49,7 +49,7 @@ public class Inventory {
         return mInventory.size();
     }
 
-    public boolean isItem(String name){
+    public boolean isItemName(String name){
         Set<InventoryItem> items = mInventory.keySet();
 
         for(InventoryItem item: items){

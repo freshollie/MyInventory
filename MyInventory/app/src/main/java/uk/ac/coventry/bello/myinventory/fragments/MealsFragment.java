@@ -24,13 +24,14 @@ import uk.ac.coventry.bello.myinventory.R;
 import uk.ac.coventry.bello.myinventory.activities.MainActivity;
 import uk.ac.coventry.bello.myinventory.adapters.MealsAdapter;
 import uk.ac.coventry.bello.myinventory.inventory.InventoryItem;
+import uk.ac.coventry.bello.myinventory.inventory.Meal;
 import uk.ac.coventry.bello.myinventory.inventory.MealsList;
 
 
 public class MealsFragment extends MyInventoryFragment {
     // TODO: Rename parameter arguments, choose names that match
 
-    private final String TAG = "InventoryFragment";
+    private final String TAG = "MealsFragment";
 
     private RecyclerView mRecyclerView;
     private MealsAdapter mAdapter;
@@ -97,7 +98,7 @@ public class MealsFragment extends MyInventoryFragment {
         AddMealFragment addMealFragment = new AddMealFragment();
 
         if (initialIngredients != null) {
-            addMealFragment.setIngredients(initialIngredients);
+            addMealFragment.setPresetIngredients(initialIngredients);
         }
 
         FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
@@ -106,7 +107,17 @@ public class MealsFragment extends MyInventoryFragment {
         addMealFragment.show(fragmentManager, "AddMealFragment");
     }
 
-    public void setInitalIngredients(ArrayList<InventoryItem> ingredients){
+    public void launchUpdateMealFragment(Meal meal){
+        UpdateMealFragment updateMealFragment = new UpdateMealFragment();
+        updateMealFragment.setEditMeal(meal);
+
+        FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
+
+        updateMealFragment.setAdapter(mAdapter);
+        updateMealFragment.show(fragmentManager, "UpdateMealFragment");
+    }
+
+    public void setInitialIngredients(ArrayList<InventoryItem> ingredients){
         initialIngredients = ingredients;
         if (mActivity != null) {
             launchAddMealFragment(ingredients);
@@ -131,7 +142,10 @@ public class MealsFragment extends MyInventoryFragment {
         }
         mEmptyView = (TextView) getActivity().findViewById(R.id.empty_meals_view);
 
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
+        itemAnimator.setAddDuration(100);
+        itemAnimator.setRemoveDuration(100);
+        mRecyclerView.setItemAnimator(itemAnimator);
         mRecyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
@@ -170,13 +184,13 @@ public class MealsFragment extends MyInventoryFragment {
 
     }
 
-    public void onSelectModeChanged(){
-        if(mAdapter.isSelectMode()) {
-            mActivity.findViewById(R.id.main_activity_content_layout).setOnClickListener(new View.OnClickListener() {
+    public void onSelectionModeChanged(){
+        if(mAdapter.isSelectionMode()) {
+            mActivity.findViewById(R.id.meals_recycler_view).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Log.d(TAG, "Click");
-                    mAdapter.setSelectMode(false);
+                    mAdapter.setSelectionMode(false);
                 }
             });
         } else {
@@ -186,15 +200,15 @@ public class MealsFragment extends MyInventoryFragment {
         int menuLayout;
 
         if(mAdapter!=null){
-            if(mAdapter.isSelectMode()){
+            if(mAdapter.isSelectionMode()){
                 menuLayout = R.menu.menu_main_delete;
 
             } else {
-                menuLayout = R.menu.menu_main_inventory;
+                menuLayout = R.menu.menu_main_meals_list;
             }
 
         } else {
-            menuLayout = R.menu.menu_main_inventory;
+            menuLayout = R.menu.menu_main_meals_list;
         }
 
         mMainActivity.setMenuLayout(menuLayout);
@@ -208,8 +222,8 @@ public class MealsFragment extends MyInventoryFragment {
     }
 
     public boolean onBackPressed(){
-        if(mAdapter.isSelectMode()){ // Turn the delete mode off if we are in delete mode
-            mAdapter.setSelectMode(false);
+        if(mAdapter.isSelectionMode()){ // Turn the delete mode off if we are in delete mode
+            mAdapter.setSelectionMode(false);
             return true;
         }
         return false;
@@ -235,15 +249,14 @@ public class MealsFragment extends MyInventoryFragment {
         switch(item.getItemId()) {
             case R.id.action_delete_item:
                 new AlertDialog.Builder(this.getContext())
-                        .setMessage("Are you sure you want to delete the selected item(s)?")
+                        .setMessage(getString(R.string.delete_meals_confirmation))
                         .setCancelable(true)
-                        .setPositiveButton("No", null)
-                        .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+                        .setPositiveButton(getString(R.string.no), null)
+                        .setNegativeButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                mAdapter.onDeleteSelectedItems();
-                                mAdapter.setSelectMode(false);
-                                onMealsListChanged();
+                                mAdapter.onDeleteSelectedMeals();
+                                mAdapter.setSelectionMode(false);
                             }
                         })
                         .show();

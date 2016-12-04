@@ -13,8 +13,11 @@
 
     <string name="title_activity_add_meal">Add Meal</string>
     <string name="title_activity_add_item">Add Item</string>
+    <string name="title_activity_update_item">Update Item</string>
+    <string name="title_activity_update_meal">Update Meal</string>
     <string name="done_button_title">Done</string>
     <string name="add_button_text">Add</string>
+    <string name="update_button_text">Update</string>
     <string name="cancel_button_text">Cancel</string>
     <string name="new_category_text">New Category</string>
 
@@ -23,6 +26,7 @@
     <string name="no_category_message">Please select a category</string>
     <string name="name_already_exist">That name already exists</string>
     <string name="not_valid_name">Please enter a valid name</string>
+    <string name="not_valid_price">Please enter a valid price</string>
 
     <string name="item_card_price_text">£%1$s</string>
 
@@ -53,6 +57,12 @@
     <string name="navigation_drawer_settings_option">Settings</string>
     <string name="navigation_drawer_inventory_option">Inventory</string>
     <string name="navigation_drawer_meals_option">Meals</string>
+
+    <string name="delete_items_confirmation">Are you sure you want to delete the selected item(s)?</string>
+    <string name="delete_meals_confirmation">Are you sure you want to delete the selected meal(s)?</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="ok">Ok</string>
 
     <string name="no_google_keep">Google Keep is not installed</string>
     <string name="no_shopping_items">There are no items that you need to shop for</string>

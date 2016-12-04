@@ -5,12 +5,14 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
+import android.widget.TextView;
+
+import java.text.DecimalFormat;
 
 import uk.ac.coventry.bello.myinventory.R;
 import uk.ac.coventry.bello.myinventory.adapters.InventoryItemsAdapter;
@@ -25,7 +27,17 @@ public class AddItemFragment extends DialogFragment {
     private final String TAG = "AddItemFragment";
     private View mView;
     private InventoryItemsAdapter mAdapter;
+    private InventoryItem presetItem;
 
+    private int positiveButtonTextStringId = R.string.add_button_text;
+    private int cancelButtonTextStringId = R.string.cancel_button_text;
+    private int titleTextStringId = R.string.title_activity_add_item;
+
+    private String presetItemName;
+    private double presetItemPrice = -1;
+    private int presetItemQuantity = -1;
+
+    @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
@@ -38,8 +50,8 @@ public class AddItemFragment extends DialogFragment {
 
         builder.setView(mView)
                 // Add action buttons
-                .setPositiveButton(R.string.add_button_text, null)
-                .setNegativeButton(R.string.cancel_button_text, new DialogInterface.OnClickListener() {
+                .setPositiveButton(positiveButtonTextStringId, null)
+                .setNegativeButton(cancelButtonTextStringId, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         AddItemFragment.this.getDialog().cancel();
                     }
@@ -47,7 +59,11 @@ public class AddItemFragment extends DialogFragment {
 
         builder.setCancelable(true);
 
+        setTitle(getString(titleTextStringId));
 
+        fillItemName();
+        fillItemPrice();
+        fillItemQuantity();
 
         return builder.create();
     }
@@ -82,6 +98,22 @@ public class AddItemFragment extends DialogFragment {
         mAdapter = adapter;
     }
 
+    public void setPositiveButtonTextStringId(int id) {
+        positiveButtonTextStringId = id;
+    }
+
+    public void setCancelButtonTextStringId(int id) {
+        cancelButtonTextStringId = id;
+    }
+
+    public void setTitleTextStringId(int id) {
+        titleTextStringId = id;
+    }
+
+    public void setTitle(String title) {
+        ((TextView) mView.findViewById(R.id.add_item_title_text)).setText(title);
+    }
+
     public void setUpNumberPicker() {
         NumberPicker np = (NumberPicker) mView.findViewById(R.id.item_quantity_picker);
         np.setMinValue(0);
@@ -89,11 +121,21 @@ public class AddItemFragment extends DialogFragment {
         np.setWrapSelectorWheel(false);
     }
 
-    public String getItemName(){
+    public String getItemName() {
         return ((EditText) mView.findViewById(R.id.item_name_input)).getText().toString();
     }
 
-    public double getItemPrice(){
+    public void setPresetItemName(String name) {
+        presetItemName = name;
+    }
+
+    public void fillItemName() {
+        if (presetItemName != null) {
+            ((EditText) mView.findViewById(R.id.item_name_input)).setText(presetItemName);
+        }
+    }
+
+    public double getItemPrice() {
         String itemPrice = ((EditText) mView.findViewById(R.id.item_price_input)).getText().toString();
         if(!itemPrice.equals("")) {
             return Double.parseDouble(itemPrice);
@@ -102,45 +144,86 @@ public class AddItemFragment extends DialogFragment {
         }
     }
 
-    public int getItemQuantity(){
+    public void setPresetItemPrice(double price) {
+        presetItemPrice = price;
+    }
+
+    public void fillItemPrice(){
+        if (presetItemPrice > 0) {
+            DecimalFormat twoDForm = new DecimalFormat("0.00");
+            ((EditText) mView.findViewById(R.id.item_price_input)).setText(String.valueOf(twoDForm.format(presetItemPrice)));
+        }
+    }
+
+    public int getItemQuantity() {
         return ((NumberPicker) mView.findViewById(R.id.item_quantity_picker)).getValue();
     }
 
-    public InventoryItem getItem(){
+    public void setPresetItemQuantity(int quantity) {
+        presetItemQuantity = quantity;
+    }
+
+    public void fillItemQuantity() {
+        if (presetItemQuantity > -1) {
+            ((NumberPicker) mView.findViewById(R.id.item_quantity_picker)).setValue(presetItemQuantity);
+        }
+    }
+
+    public InventoryItem getItem() {
+        if (presetItem != null) {
+            presetItem.setName(getItemName());
+            presetItem.setPrice(getItemPrice());
+            return presetItem;
+        }
+
         return new InventoryItem(
                 getItemName(),
                 getItemPrice()
         );
     }
 
-    private boolean saveItem() {
-        Inventory inventory = Inventory.getInstance();
-        Log.v(TAG, String.valueOf(inventory.isItem(getItemName())));
+    public void setPresetItem(InventoryItem item) {
+        presetItem = item;
+    }
 
-        if (getItemName().equals("") | getItemPrice() == 0) {
+    public boolean validate(String name, double price, int quantity){
+        Inventory inventory = Inventory.getInstance();
+        String alertMessage = "";
+
+        if (name.equals("")) {
+            alertMessage = getString(R.string.not_valid_name);
+        }
+
+        if (price == 0) {
+            alertMessage = getString(R.string.not_valid_price);
+        }
+
+        if (inventory.isItemName(name) && !name.equals(presetItemName)) {
+            alertMessage = getString(R.string.name_already_exist);
+        }
+
+        if (!alertMessage.equals("")) {
             new AlertDialog.Builder(getActivity())
-                    .setMessage("Please enter valid data")
+                    .setMessage(alertMessage)
                     .setCancelable(true)
-                    .setPositiveButton("Ok", null)
+                    .setPositiveButton(getString(R.string.ok), null)
                     .show();
             return false;
         }
+        return true;
+    }
 
-        if (!inventory.isItem(getItemName())) {
+    private boolean saveItem() {
+
+        if (validate(getItemName(), getItemPrice(), getItemQuantity())) {
+            Inventory inventory = Inventory.getInstance();
+
             inventory.setItem(getItem(), getItemQuantity());
             inventory.save(getActivity().getApplicationContext());
             return true;
-        } else {
-            new AlertDialog.Builder(getActivity())
-                    .setMessage("This item already exists")
-                    .setCancelable(true)
-                    .setPositiveButton("Ok", null)
-                    .show();
         }
         return false;
     }
-
-
 }
 
 

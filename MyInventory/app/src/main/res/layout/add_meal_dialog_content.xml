@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/title_activity_add_meal"
-        android:id="@+id/add_item_title_text"
+        android:id="@+id/add_meal_title_text"
         android:layout_row="0"
         android:layout_column="0"
         android:layout_columnSpan="2"/>
@@ -27,6 +27,7 @@
         android:maxLines="1"
         android:layout_row="1"
         android:layout_column="1"
+        android:inputType="text"
         android:imeOptions="actionNext" />
 
     <TextView
@@ -63,10 +64,11 @@
             android:layout_gravity="end"/>
 
         <EditText
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_width="match_parent"
             android:maxLines="1"
             android:visibility="gone"
+            android:inputType="text"
             android:imeOptions="actionNext"
             android:id="@+id/meal_category_input" />
 

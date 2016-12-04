@@ -44,6 +44,18 @@ public class Meal {
         return name;
     }
 
+    public void setName(String newName) {
+        name = newName;
+    }
+
+    public void setIngredients(ArrayList<InventoryItem> newIngredients) {
+        ingredients = newIngredients;
+    }
+
+    public void setCategory(String newCategory) {
+        category = newCategory;
+    }
+
     public JSONObject getJson(){
         JSONObject jsonMeal = new JSONObject();
         JSONArray mealsArray = new JSONArray();

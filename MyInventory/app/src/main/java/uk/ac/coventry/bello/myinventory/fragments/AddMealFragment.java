@@ -6,28 +6,19 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatSpinner;
-import android.support.v7.widget.PopupMenu;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.NumberPicker;
+import android.widget.TextView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 import uk.ac.coventry.bello.myinventory.R;
-import uk.ac.coventry.bello.myinventory.adapters.InventoryItemsAdapter;
 import uk.ac.coventry.bello.myinventory.adapters.MealsAdapter;
 import uk.ac.coventry.bello.myinventory.inventory.Inventory;
 import uk.ac.coventry.bello.myinventory.inventory.InventoryItem;
@@ -41,14 +32,36 @@ import uk.ac.coventry.bello.myinventory.inventory.MealsList;
 
 public class AddMealFragment extends DialogFragment {
     private final String TAG = "AddMealFragment";
+
     private View mView;
     private MealsAdapter mAdapter;
     private int numIngredientSpinners = 0;
+
     private ArrayList<InventoryItem> presetIngredients;
+    private String presetName;
+    private String presetCategory;
+
     private AppCompatSpinner mLastSpinner;
     private ArrayList<String> ingredientsList;
     private String[] ingredientsNameArray;
 
+    private int positiveButtonTextStringId = R.string.add_button_text;
+    private int cancelButtonTextStringId = R.string.cancel_button_text;
+    private int titleTextStringId = R.string.title_activity_add_meal;
+
+    private View.OnClickListener positiveButtonOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v)
+        {
+            if (saveMeal()) {
+                dismiss();
+                if (getAdapter() != null) {
+                    getAdapter().notifyMealsListChanged();
+
+                }
+            }
+        }
+    };
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -63,8 +76,8 @@ public class AddMealFragment extends DialogFragment {
 
         builder.setView(mView)
                 // Add action buttons
-                .setPositiveButton(R.string.add_button_text, null)
-                .setNegativeButton(R.string.cancel_button_text, new DialogInterface.OnClickListener() {
+                .setPositiveButton(positiveButtonTextStringId, null)
+                .setNegativeButton(cancelButtonTextStringId, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         AddMealFragment.this.getDialog().cancel();
                     }
@@ -72,16 +85,15 @@ public class AddMealFragment extends DialogFragment {
 
         builder.setCancelable(true);
 
-        ingredientsList = Inventory.getInstance().getItemNames();
-        Collections.sort(ingredientsList);
-        ingredientsList.add(0, getString(R.string.input_select_ingredient_text));
-        ingredientsNameArray = ingredientsList.toArray(new String[0]);
+        collectIngredients();
 
         fillCategoriesSpinner();
 
-        newIngredientSpinner();
-        setIngredientsSpinners();
+        createIngredientsSpinners();
 
+        fillPresetName();
+
+        setTitle(getString(titleTextStringId));
 
         return builder.create();
     }
@@ -90,78 +102,22 @@ public class AddMealFragment extends DialogFragment {
     public void onStart() {
         super.onStart();    //super.onStart() is where dialog.show() is actually called on the underlying dialog, so we have to do it after this point
 
-        AlertDialog d = (AlertDialog) getDialog();
+        AlertDialog dialog = (AlertDialog) getDialog();
 
-        if(d != null)
+        if(dialog != null)
         {
-            d.setCanceledOnTouchOutside(true);
+            dialog.setCanceledOnTouchOutside(true);
 
-            Button positiveButton = d.getButton(Dialog.BUTTON_POSITIVE);
-            positiveButton.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    if (saveMeal()) {
-                        dismiss();
-                        if (mAdapter != null) {
-                            mAdapter.notifyDataSetChanged();
-                        }
-                    }
-                }
-            });
+            Button positiveButton = dialog.getButton(Dialog.BUTTON_POSITIVE);
+            positiveButton.setOnClickListener(positiveButtonOnClickListener);
         }
     }
 
-    public void setIngredientsSpinners() {
-        if (presetIngredients != null) {
-            for (InventoryItem ingredient : presetIngredients) {
-                mLastSpinner.setSelection(ingredientsList.indexOf(ingredient.getName()));
-                newIngredientSpinner();
-            }
-
-        } else {
-            for (int i = 0; i < 0; i++) {
-                newIngredientSpinner();
-            }
-        }
-    }
-
-    public void fillCategoriesSpinner() {
-        AppCompatSpinner categorySpinner = (AppCompatSpinner) mView.findViewById(R.id.input_category_spinner);
-        MealCategories.getInstance().load(getContext());
-        ArrayList<String> categoriesSpinnerList = new ArrayList<>(MealCategories.getInstance());
-
-        Collections.sort(categoriesSpinnerList);
-
-        categoriesSpinnerList.add(0, getString(R.string.input_select_category_text));
-        categoriesSpinnerList.add(1, getString(R.string.input_add_category_text));
-
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
-                getActivity(),
-                android.R.layout.simple_spinner_item,
-                categoriesSpinnerList.toArray(new String[0])
-        );
-
-        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if(i == 1){
-                    mView.findViewById(R.id.meal_category_input).setVisibility(View.VISIBLE);
-                } else {
-                    mView.findViewById(R.id.meal_category_input).setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        categorySpinner.setAdapter(categoryAdapter);
+    public void collectIngredients() {
+        ingredientsList = Inventory.getInstance().getItemNames();
+        Collections.sort(ingredientsList);
+        ingredientsList.add(0, getString(R.string.input_select_ingredient_text));
+        ingredientsNameArray = ingredientsList.toArray(new String[0]);
     }
 
     public void newIngredientSpinner() {
@@ -200,8 +156,108 @@ public class AddMealFragment extends DialogFragment {
 
     }
 
+    public void createIngredientsSpinners() {
+        newIngredientSpinner(); // We always make 1
+
+        if (presetIngredients != null) { // We have data for the
+            for (InventoryItem ingredient : presetIngredients) {
+                mLastSpinner.setSelection(ingredientsList.indexOf(ingredient.getName()));
+                newIngredientSpinner();
+            }
+
+        } else {
+            for (int i = 0; i < 0; i++) {
+                newIngredientSpinner();
+            }
+        }
+    }
+
+    public void fillCategoriesSpinner() {
+        AppCompatSpinner categorySpinner = (AppCompatSpinner) mView.findViewById(R.id.input_category_spinner);
+        MealCategories.getInstance().load(getContext());
+        ArrayList<String> categoriesSpinnerList = new ArrayList<>(MealCategories.getInstance());
+
+        Collections.sort(categoriesSpinnerList);
+
+        categoriesSpinnerList.add(0, getString(R.string.input_select_category_text));
+        categoriesSpinnerList.add(1, getString(R.string.input_add_category_text));
+
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
+                getActivity(),
+                android.R.layout.simple_spinner_item,
+                categoriesSpinnerList.toArray(new String[0])
+        );
+
+
+        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if(i == 1){
+                    mView.findViewById(R.id.meal_category_input).setVisibility(View.VISIBLE);
+                } else {
+                    mView.findViewById(R.id.meal_category_input).setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        categorySpinner.setAdapter(categoryAdapter);
+
+        if (presetCategory != null) {
+            categorySpinner.setSelection(categoriesSpinnerList.indexOf(presetCategory));
+        }
+    }
+
+    public void setTitle(String title) {
+        ((TextView) mView.findViewById(R.id.add_meal_title_text)).setText(title);
+    }
+
+    public void setTitleTextStringId(int id) {
+        titleTextStringId = id;
+    }
+
+    public void fillPresetName() {
+        if (presetName != null) {
+            ((EditText) mView.findViewById(R.id.meal_name_input)).setText(presetName);
+        }
+    }
+
+    public void setPositiveButtonTextStringId(int id) {
+        positiveButtonTextStringId = id;
+    }
+
+    public void setCancelButtonTextStringId(int id) {
+        cancelButtonTextStringId = id;
+    }
+
+    public void setPresetIngredients(ArrayList<InventoryItem> ingredients) {
+        presetIngredients = ingredients;
+    }
+
+    public void setPresetName(String name){
+        presetName = name;
+    }
+
+    public void setPresetCategory(String category) {
+        presetCategory = category;
+    }
+
+    public void setPositiveButtonOnClickListener(View.OnClickListener onClickListener) {
+        positiveButtonOnClickListener = onClickListener;
+    }
+
     public void setAdapter(MealsAdapter adapter) {
         mAdapter = adapter;
+    }
+
+    public MealsAdapter getAdapter() {
+        return mAdapter;
     }
 
     public String getMealName() {
@@ -238,21 +294,11 @@ public class AddMealFragment extends DialogFragment {
         return ingredientsList;
     }
 
-    public void setIngredients(ArrayList<InventoryItem> ingredients) {
-        presetIngredients = ingredients;
-    }
-
-    private boolean saveMeal() {
-        MealsList mealsList = MealsList.getInstance();
-
-        ArrayList<InventoryItem> ingredients = getSelectedIngredients();
-        String category = MealCategories.getInstance().getValidCategory(getCategory());
-        String name = getMealName();
+    public boolean validate(String name, String category, ArrayList<InventoryItem> ingredients) {
         String alertMessage = "";
-
         if (name.isEmpty()) {
             alertMessage = getString(R.string.not_valid_name);
-        } else if (mealsList.isMealName(name)) {
+        } else if (MealsList.getInstance().isMealName(name) && !presetName.equals(name)) {
             alertMessage = getString(R.string.name_already_exist);
         } else if (ingredients.isEmpty()) {
             alertMessage = getString(R.string.no_ingredients_message);
@@ -264,27 +310,40 @@ public class AddMealFragment extends DialogFragment {
             new AlertDialog.Builder(getActivity())
                     .setMessage(alertMessage)
                     .setCancelable(true)
-                    .setPositiveButton("Ok", null)
+                    .setPositiveButton(getString(R.string.ok), null)
                     .show();
             return false;
-        } else {
+        }
+
+        return true;
+    }
+
+    public void handleCategory(String category) {
+        MealCategories mealCategories = MealCategories.getInstance();
+        if (!mealCategories.contains(category)) {
+            mealCategories.add(category);
+        }
+        mealCategories.save(getContext());
+    }
+
+    private boolean saveMeal() {
+        MealsList mealsList = MealsList.getInstance();
+
+        ArrayList<InventoryItem> ingredients = getSelectedIngredients();
+        String category = MealCategories.getInstance().getValidCategory(getCategory());
+        String name = getMealName();
+
+        if (validate(name, category, ingredients)) {
             Meal meal = new Meal(name, ingredients, category);
             mealsList.add(meal);
             mealsList.save(getContext());
 
-            if (!MealCategories.getInstance().contains(category)) {
-                MealCategories.getInstance().add(category);
-            }
+            handleCategory(category);
 
-            MealCategories.getInstance().save(getContext());
             return true;
         }
+        return false;
     }
 
 
 }
-
-
-
-
-

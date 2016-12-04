@@ -2,6 +2,7 @@ package uk.ac.coventry.bello.myinventory.inventory;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -9,17 +10,22 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 import uk.ac.coventry.bello.myinventory.R;
 
+import static android.content.ContentValues.TAG;
+
 /**
  * Created by Freshollie on 27/11/2016.
  */
 
 public class MealsList extends ArrayList<Meal>{
+    private final String TAG = "MealsList";
     private static final MealsList INSTANCE = new MealsList();
     private Inventory mInventory;
 
@@ -47,6 +53,19 @@ public class MealsList extends ArrayList<Meal>{
             }
         }
         return false;
+    }
+
+    public void sort() {
+        Collections.sort(this, new Comparator<Meal>() {
+            @Override
+            public int compare(Meal meal, Meal t1) {
+                return meal.getName().toLowerCase().compareTo(t1.getName().toLowerCase());
+            }
+        });
+    }
+
+    public ArrayList<Meal> getListCopy() {
+        return new ArrayList<>(this);
     }
 
     public void save(Context context){

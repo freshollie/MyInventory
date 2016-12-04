@@ -24,6 +24,7 @@
         android:layout_width="211dp"
         android:layout_height="wrap_content"
         android:id="@+id/item_name_input"
+        android:inputType="text"
         android:maxLines="1"
         android:layout_row="1"
         android:layout_column="1" />

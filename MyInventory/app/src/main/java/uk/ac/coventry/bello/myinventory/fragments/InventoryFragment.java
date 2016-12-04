@@ -78,6 +78,16 @@ public class InventoryFragment extends MyInventoryFragment {
 
     }
 
+    public void launchUpdateItemFragment(InventoryItem item) {
+        UpdateItemFragment updateItemFragment = new UpdateItemFragment();
+
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+
+        updateItemFragment.setEditItem(item);
+        updateItemFragment.setAdapter(mAdapter);
+        updateItemFragment.show(fragmentManager, "UpdateItemFragment");
+    }
+
     public void setUpToolbarLayout() {
         mMainActivity.setAppBarColor(
                 ContextCompat.getColor(getContext(), R.color.colorPrimary)
@@ -113,7 +123,10 @@ public class InventoryFragment extends MyInventoryFragment {
         }
         mEmptyView = (TextView) getActivity().findViewById(R.id.empty_inventory_view);
 
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
+        itemAnimator.setAddDuration(100);
+        itemAnimator.setRemoveDuration(100);
+        mRecyclerView.setItemAnimator(itemAnimator);
         mRecyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
@@ -153,12 +166,12 @@ public class InventoryFragment extends MyInventoryFragment {
     }
 
     public void onSelectModeChanged(){
-        if(mAdapter.isSelectMode()) {
+        if(mAdapter.isSelectionMode()) {
             mActivity.findViewById(R.id.main_activity_content_layout).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Log.d(TAG, "Click");
-                    mAdapter.setSelectMode(false);
+                    mAdapter.setSelectionMode(false);
                 }
             });
         } else {
@@ -168,7 +181,7 @@ public class InventoryFragment extends MyInventoryFragment {
         int menuLayout;
 
         if(mAdapter!=null){
-            if(mAdapter.isSelectMode()){
+            if(mAdapter.isSelectionMode()){
                 menuLayout = R.menu.menu_main_inventory_highlight;
 
             } else {
@@ -190,8 +203,8 @@ public class InventoryFragment extends MyInventoryFragment {
     }
 
     public boolean onBackPressed(){
-        if(mAdapter.isSelectMode()){ // Turn the delete mode off if we are in delete mode
-            mAdapter.setSelectMode(false);
+        if(mAdapter.isSelectionMode()){ // Turn the delete mode off if we are in delete mode
+            mAdapter.setSelectionMode(false);
             return true;
         }
         return false;
@@ -251,11 +264,11 @@ public class InventoryFragment extends MyInventoryFragment {
 
     public void makeMealFromItems() {
         ArrayList<InventoryItem> ingredients = mAdapter.getSelectedItems();
-        mAdapter.setSelectMode(false);
+        mAdapter.setSelectionMode(false);
         onSelectModeChanged();
 
         mMainActivity.setCurrentFragmentId(MainActivity.MEALS_FRAGMENT_MENU_ID);
-        ((MealsFragment) mMainActivity.getCurrentFragment()).setInitalIngredients(ingredients);
+        ((MealsFragment) mMainActivity.getCurrentFragment()).setInitialIngredients(ingredients);
     }
 
     @Override
@@ -267,14 +280,14 @@ public class InventoryFragment extends MyInventoryFragment {
 
             case R.id.action_delete_item:
                 new AlertDialog.Builder(this.getContext())
-                        .setMessage("Are you sure you want to delete the selected item(s)?")
+                        .setMessage(getString(R.string.delete_items_confirmation))
                         .setCancelable(true)
-                        .setPositiveButton("No", null)
-                        .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+                        .setPositiveButton(getString(R.string.no), null)
+                        .setNegativeButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 mAdapter.onDeleteSelectedItems();
-                                mAdapter.setSelectMode(false);
+                                mAdapter.setSelectionMode(false);
                                 onInventoryChanged();
                             }
                         })

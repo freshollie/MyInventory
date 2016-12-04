@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -12,6 +13,8 @@ import android.view.View;
 import android.view.LayoutInflater;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.text.DecimalFormat;
 
@@ -27,7 +30,8 @@ import uk.ac.coventry.bello.myinventory.inventory.InventoryItem;
 
 public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAdapter.ItemViewHolder> {
     private Inventory mInventory;
-    private List<InventoryItem> mItemList;
+    private ArrayList<InventoryItem> mItemList = new ArrayList<>();
+    private ArrayList<InventoryItem> mOldItemList;
     private InventoryFragment mParentInventoryFragment;
     private String TAG = "InventoryItemAdapter";
     private ArrayList<Integer> selectedItems;
@@ -69,25 +73,66 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
     // Provide a suitable constructor (depends on the kind of dataset)
     public InventoryItemsAdapter(Inventory inventory, InventoryFragment inventoryFragment) {
         mInventory = inventory;
-        mItemList = inventory.getItems();
+        collectItemsList();
+
         mParentInventoryFragment = inventoryFragment;
         selectMode = false;
         resetSelectedItems();
     }
 
-    public void setSelectMode(boolean mode) {
+    public void setSelectionMode(boolean mode) {
         resetSelectedItems();
         selectMode = mode;
         mParentInventoryFragment.onSelectModeChanged();
-        notifyDataSetChanged();
+        notifyInventoryChanged();
+    }
+
+    public void handleDataSetChangedAnimations() {
+        for (InventoryItem item: mOldItemList) {
+            if (!mItemList.contains(item)) {
+                Log.v(TAG, "Item removed at " + String.valueOf(mOldItemList.indexOf(item)));
+                notifyItemRemoved(mOldItemList.indexOf(item));
+            }
+        }
+
+        for (InventoryItem item: mItemList) {
+            if (!mOldItemList.contains(item)) {
+                Log.v(TAG, "Item added at " + String.valueOf(mItemList.indexOf(item)));
+                notifyItemInserted(mItemList.indexOf(item));
+            }
+        }
+
+        notifyItemRangeChanged(0, getItemCount());
+/*
+        for (InventoryItem item: mItemList) {
+            if (mItemList.indexOf(item) != mOldItemList.indexOf(item)) {
+                Log.v(TAG, "Item moved from " + String.valueOf(mItemList.indexOf(item)));
+                notifyItemMoved(mOldItemList.indexOf(item), mItemList.indexOf(item));
+            }
+        }
+        */
+
+    }
+
+    public void collectItemsList() {
+        mItemList = mInventory.getItems();
+        Collections.sort(mItemList, new Comparator<InventoryItem>() {
+            @Override
+            public int compare(InventoryItem inventoryItem, InventoryItem t1) {
+                return inventoryItem.getName().toLowerCase().compareTo(t1.getName().toLowerCase());
+            }
+        });
     }
 
     public void notifyInventoryChanged() {
-        mItemList = mInventory.getItems();
-        notifyDataSetChanged();
+        mOldItemList = mItemList;
+        collectItemsList();
+        //notifyDataSetChanged();
+        handleDataSetChangedAnimations();
+        mParentInventoryFragment.onInventoryChanged();
     }
 
-    public boolean isSelectMode(){
+    public boolean isSelectionMode(){
         return selectMode;
     }
 
@@ -105,7 +150,7 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
         notifyItemChanged(i);
 
         if(selectedItems.size() < 1) {
-            setSelectMode(false);
+            setSelectionMode(false);
         }
     }
 
@@ -141,6 +186,11 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
 
         mInventory.save(mParentInventoryFragment.getContext());
         notifyInventoryChanged();
+
+        if(getItemCount() < 1){
+            mOldItemList = mItemList;
+            notifyDataSetChanged();
+        }
     }
 
     // Create new views (invoked by the layout manager)
@@ -162,7 +212,7 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
 
-        DecimalFormat twoDForm = new DecimalFormat("#.00");
+        DecimalFormat twoDForm = new DecimalFormat("0.00");
 
         final int holderPosition = position;
 
@@ -180,6 +230,7 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
             holder.mCardView.setCardBackgroundColor(ContextCompat.getColor(mParentInventoryFragment.getContext(), android.R.color.darker_gray));
         } else {
             holder.mCardView.setCardBackgroundColor(Color.WHITE);
+
         }
 
         // Set up the buttons on the card based on what mode we are in, delete or normal
@@ -190,7 +241,7 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
         holder.mTableLayout.setOnLongClickListener(null);
 
         // Set these click listeners if we are not in delete mode
-        if (!isSelectMode()) {
+        if (!isSelectionMode()) {
             holder.mAddButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -215,7 +266,7 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
             holder.mTableLayout.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    setSelectMode(true);
+                    setSelectionMode(true);
                     appendSelectedItem(holderPosition);
                     return true;
                 }
@@ -225,9 +276,9 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
         holder.mTableLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isSelectMode()){
+                if(isSelectionMode()){
 
-                    if(getSelectedItems().contains(holderPosition)) {
+                    if(getSelectedItemIndexes().contains(holderPosition)) {
 
                         removeSelectedItem(holderPosition);
 
@@ -235,7 +286,7 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
                         appendSelectedItem(holderPosition);
                     }
                 } else {
-                    holder.mView.findViewById(R.id.item_card_table);
+                    mParentInventoryFragment.launchUpdateItemFragment(item);
                 }
             }
         });
