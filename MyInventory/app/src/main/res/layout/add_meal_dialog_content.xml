@@ -8,7 +8,8 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin">
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@android:color/white">
 
     <TextView
         android:layout_width="wrap_content"
@@ -84,22 +85,27 @@
         android:layout_row="3"
         android:layout_column="0"
         android:paddingTop="10dp" />
-
-    <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="250dp"
+    <LinearLayout
         android:layout_row="3"
         android:layout_column="1"
-        android:scrollbarFadeDuration="0"
-        android:scrollbarAlwaysDrawVerticalTrack="true">
-        <LinearLayout
-            android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="250dp"
+        android:layout_marginEnd="20dp"
+        android:background="@android:color/white">
+        <ScrollView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:id="@+id/meal_ingredients_spinner_list">
-        </LinearLayout>
-    </ScrollView>
+            android:layout_height="match_parent"
+            android:scrollbarFadeDuration="0"
+            android:scrollbarAlwaysDrawVerticalTrack="true">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:id="@+id/meal_ingredients_spinner_list">
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
 
 
 </GridLayout>

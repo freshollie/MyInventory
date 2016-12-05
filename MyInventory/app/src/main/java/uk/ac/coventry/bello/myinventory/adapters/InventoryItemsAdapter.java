@@ -6,6 +6,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.view.ViewGroup;
@@ -51,7 +52,7 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
         public TextView mQuantityText;
         public ImageButton mAddButton;
         public ImageButton mRemoveButton;
-        public TableLayout mTableLayout;
+        public RelativeLayout mRelativeLayout;
         public CardView mCardView;
         public View mView;
 
@@ -63,8 +64,8 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
 
             mAddButton = (ImageButton) v.findViewById(R.id.item_card_add_quantity_button);
             mRemoveButton = (ImageButton) v.findViewById(R.id.item_card_remove_quantity_button);
-            mTableLayout = (TableLayout) v.findViewById(R.id.item_card_table);
             mCardView = (CardView) v.findViewById(R.id.item_card_view);
+            mRelativeLayout (RelativeLayout) v.findViewById(R.item_)
 
             mView = v;
         }
