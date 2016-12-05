@@ -3,6 +3,7 @@ package uk.ac.coventry.bello.myinventory.activities;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -369,6 +370,8 @@ public class MainActivity extends AppCompatActivity
 
             case R.id.nav_manage:
                 mDrawer.closeDrawer(GravityCompat.START);
+                //Intent settingsIntent = new Intent(this, SettingsActivity.class);
+                //startActivity(settingsIntent);
                 return true;
         }
         return false;

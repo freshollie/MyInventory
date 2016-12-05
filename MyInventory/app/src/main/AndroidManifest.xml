@@ -17,18 +17,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".MealListActivity"
-            android:label="@string/title_activity_meal_list"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".MealMakerActivity"
-            android:label="@string/title_activity_meal_maker"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".DrawerActivity"
-            android:label="@string/title_activity_drawer"
-            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
