@@ -370,8 +370,8 @@ public class MainActivity extends AppCompatActivity
 
             case R.id.nav_manage:
                 mDrawer.closeDrawer(GravityCompat.START);
-                Intent settingsIntent = new Intent(this, SettingsActivity.class);
-                startActivity(settingsIntent);
+                //Intent settingsIntent = new Intent(this, SettingsActivity.class);
+                //startActivity(settingsIntent);
                 return true;
         }
         return false;
