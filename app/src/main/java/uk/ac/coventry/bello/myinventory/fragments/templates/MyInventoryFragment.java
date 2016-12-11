@@ -1,4 +1,4 @@
-package uk.ac.coventry.bello.myinventory.fragments;
+package uk.ac.coventry.bello.myinventory.fragments.templates;
 
 import android.support.v4.app.Fragment;
 

@@ -27,7 +27,7 @@ import uk.ac.coventry.bello.myinventory.fragments.InventoryFragment;
 import uk.ac.coventry.bello.myinventory.R;
 import uk.ac.coventry.bello.myinventory.fragments.MealsFragment;
 import uk.ac.coventry.bello.myinventory.inventory.Inventory;
-import uk.ac.coventry.bello.myinventory.fragments.MyInventoryFragment;
+import uk.ac.coventry.bello.myinventory.fragments.templates.MyInventoryFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity
 
         mHandler = new Handler();
 
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.main_activity_toolbar);
         setSupportActionBar(mToolbar);
 
         mFab = (FloatingActionButton) findViewById(R.id.fab);
@@ -184,8 +184,8 @@ public class MainActivity extends AppCompatActivity
 
     public void onPrepareUpdateToolbar() {
 
-        Integer colorFrom = ((ColorDrawable) findViewById(R.id.toolbar).getBackground()).getColor(); // Get the current toolbar color
-        Integer colorTo = ((ColorDrawable) findViewById(R.id.toolbar).getBackground()).getColor();
+        Integer colorFrom = ((ColorDrawable) findViewById(R.id.main_activity_toolbar).getBackground()).getColor(); // Get the current toolbar color
+        Integer colorTo = ((ColorDrawable) findViewById(R.id.main_activity_toolbar).getBackground()).getColor();
 
         if (menuLayout != 0) {
 
@@ -251,8 +251,10 @@ public class MainActivity extends AppCompatActivity
 
     public MyInventoryFragment getNewCurrentFragmentInstance() {
         switch (mCurrentFragmentId) {
+
             case INVENTORY_FRAGMENT_MENU_ID:
                 return new InventoryFragment();
+
             case MEALS_FRAGMENT_MENU_ID:
                 return new MealsFragment();
         }
@@ -370,8 +372,8 @@ public class MainActivity extends AppCompatActivity
 
             case R.id.nav_manage:
                 mDrawer.closeDrawer(GravityCompat.START);
-                //Intent settingsIntent = new Intent(this, SettingsActivity.class);
-                //startActivity(settingsIntent);
+                Intent settingsIntent = new Intent(this, SettingsActivity.class);
+                startActivity(settingsIntent);
                 return true;
         }
         return false;

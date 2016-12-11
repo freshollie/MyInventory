@@ -35,8 +35,8 @@
     <string name="saved_categories_key">saved_categories_key</string>
     <string name="save_key">oowyfng89aye89fay98fadsf</string>
 
-    <string name="inventory_items_empty">You don\'t appear to have any items in your inventory. Press the plus button to add items.</string>
-    <string name="meals_list_empty">You don\'t appear to have any meals. Press the plus button to add a meal.</string>
+    <string name="inventory_items_empty">You don\'t appear to have any items in your inventory.\nPress the plus button to add items.</string>
+    <string name="meals_list_empty">You don\'t appear to have any meals.\nPress the plus button to add a meal.</string>
 
     <string name="create_shopping_list">Create Shopping List</string>
 
@@ -68,77 +68,39 @@
     <string name="no_shopping_items">There are no items that you need to shop for</string>
 
     <string name="shopping_list_title">Shopping List %1$s</string>
+
     <string name="title_activity_settings">Settings</string>
 
-    <!-- Strings related to Settings -->
+    <string name="clear_data_category_title">Reset Data</string>
 
-    <!-- Example General settings -->
-    <string name="pref_header_general">General</string>
+    <string name="clear_categories_button_key">clear_categories</string>
+    <string name="clear_categories_button_text">Reset Meal Categories</string>
+    <string name="clear_categories_summary_text">Clear all the meal categories</string>
+    <string name="clear_categories_confirmation_text">Are you sure you want to clear all categories?</string>
+    <string name="clear_categories_done_text">Categories cleared</string>
 
-    <string name="pref_title_social_recommendations">Enable social recommendations</string>
-    <string name="pref_description_social_recommendations">Recommendations for people to contact
-        based on your message history
-    </string>
+    <string name="clear_meals_button_key">clear_meals</string>
+    <string name="clear_meals_button_text">Reset Meals</string>
+    <string name="clear_meals_summary_text">Clear all the meals stored</string>
+    <string name="clear_meals_confirmation_text">Are you sure you want to clear all meals?</string>
+    <string name="clear_meals_done_text">Meals cleared</string>
 
-    <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">John Smith</string>
+    <string name="clear_inventory_button_key">clear_inventory</string>
+    <string name="clear_inventory_button_text">Reset Inventory</string>
+    <string name="clear_inventory_summary_text">Clear all the items stored in the inventory</string>
+    <string name="clear_inventory_confirmation_text">Are you sure you want to clear all items?</string>
+    <string name="clear_inventory_done_text">Inventory cleared</string>
 
-    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
-    <string-array name="pref_example_list_titles">
-        <item>Always</item>
-        <item>When possible</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_example_list_values">
-        <item>1</item>
-        <item>0</item>
-        <item>-1</item>
-    </string-array>
+    <string name="clear_all_button_key">clear_all</string>
+    <string name="clear_all_button_text">Reset All</string>
+    <string name="clear_all_summary_text">Clear all saved data</string>
+    <string name="clear_all_confirmation_text">Are you sure you want to clear everything?</string>
+    <string name="clear_all_done_text">All cleared</string>
 
-    <!-- Example settings for Data & Sync -->
-    <string name="pref_header_data_sync">Data &amp; sync</string>
+    <string name="about_category_title">About</string>
 
-    <string name="pref_title_sync_frequency">Sync frequency</string>
-    <string-array name="pref_sync_frequency_titles">
-        <item>15 minutes</item>
-        <item>30 minutes</item>
-        <item>1 hour</item>
-        <item>3 hours</item>
-        <item>6 hours</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_sync_frequency_values">
-        <item>15</item>
-        <item>30</item>
-        <item>60</item>
-        <item>180</item>
-        <item>360</item>
-        <item>-1</item>
-    </string-array>
+    <string name="about_text">Created by Oliver Bell, 2016\nCreated for Coventry University Module A202\nOpen Source</string>
 
-    <string-array name="list_preference_entries">
-        <item>Entry 1</item>
-        <item>Entry 2</item>
-        <item>Entry 3</item>
-    </string-array>
 
-    <string-array name="list_preference_entry_values">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </string-array>
 
-    <string-array name="multi_select_list_preference_default_value" />
-
-    <string name="pref_title_system_sync_settings">System sync settings</string>
-
-    <!-- Example settings for Notifications -->
-    <string name="pref_header_notifications">Notifications</string>
-
-    <string name="pref_title_new_message_notifications">New message notifications</string>
-
-    <string name="pref_title_ringtone">Ringtone</string>
-    <string name="pref_ringtone_silent">Silent</string>
-
-    <string name="pref_title_vibrate">Vibrate</string>
 </resources>

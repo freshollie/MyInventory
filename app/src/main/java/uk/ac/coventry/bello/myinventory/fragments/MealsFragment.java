@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import uk.ac.coventry.bello.myinventory.R;
 import uk.ac.coventry.bello.myinventory.activities.MainActivity;
 import uk.ac.coventry.bello.myinventory.adapters.MealsAdapter;
+import uk.ac.coventry.bello.myinventory.fragments.templates.MyInventoryFragment;
 import uk.ac.coventry.bello.myinventory.inventory.InventoryItem;
 import uk.ac.coventry.bello.myinventory.inventory.Meal;
 import uk.ac.coventry.bello.myinventory.inventory.MealsList;
