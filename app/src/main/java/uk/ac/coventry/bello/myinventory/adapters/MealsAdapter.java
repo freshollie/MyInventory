@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.view.ViewGroup;
@@ -52,7 +53,7 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.MealViewHold
         public TextView mMealNameText;
         public TextView mMealPriceText;
         public TextView mMealCategoryText;
-        public TableLayout mTableLayout;
+        public RelativeLayout mRelativeLayout;
         public CardView mCardView;
         public View mView;
         public ColorStateList defaultTextColors;
@@ -65,7 +66,7 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.MealViewHold
 
             defaultTextColors = mMealCategoryText.getTextColors();
 
-            mTableLayout = (TableLayout) v.findViewById(R.id.meal_card_table);
+            mRelativeLayout = (RelativeLayout) v.findViewById(R.id.meal_card_layout);
             mCardView = (CardView) v.findViewById(R.id.meal_card_view);
 
             mView = v;
@@ -196,8 +197,7 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.MealViewHold
 
     // Create new views (invoked by the layout manager)
     @Override
-    public MealViewHolder onCreateViewHolder(ViewGroup parent,
-                                                                   int viewType) {
+    public MealViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.meal_card_layout, parent, false);
@@ -246,12 +246,12 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.MealViewHold
 
         // Set up the buttons on the card based on what mode we are in, delete or normal
 
-        holder.mTableLayout.setOnClickListener(null); // Reset click listeners to noting
-        holder.mTableLayout.setOnLongClickListener(null);
+        holder.mRelativeLayout.setOnClickListener(null); // Reset click listeners to noting
+        holder.mRelativeLayout.setOnLongClickListener(null);
 
         // Set these click listeners if we are not in delete mode
         if (!isSelectionMode()) {
-            holder.mTableLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            holder.mRelativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
                     setSelectionMode(true);
@@ -261,7 +261,7 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.MealViewHold
             });
         }
 
-        holder.mTableLayout.setOnClickListener(new View.OnClickListener() {
+        holder.mRelativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(isSelectionMode()) {
