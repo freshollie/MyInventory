@@ -20,6 +20,7 @@ import java.util.Comparator;
 import uk.ac.coventry.bello.myinventory.R;
 import uk.ac.coventry.bello.myinventory.fragments.MealsFragment;
 import uk.ac.coventry.bello.myinventory.inventory.Inventory;
+import uk.ac.coventry.bello.myinventory.inventory.InventoryItem;
 import uk.ac.coventry.bello.myinventory.inventory.Meal;
 import uk.ac.coventry.bello.myinventory.inventory.MealsList;
 
@@ -92,7 +93,10 @@ public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.MealViewHold
     }
 
     public void handleDataSetChangedAnimations() {
-        for (Meal meal: mOldMealList) {
+        ArrayList<Meal> reversedOldMealList = new ArrayList<>(mOldMealList);
+        Collections.reverse(reversedOldMealList);
+
+        for (Meal meal: reversedOldMealList) {
             if (!mMealsList.contains(meal)) {
                 notifyItemRemoved(mOldMealList.indexOf(meal));
             }

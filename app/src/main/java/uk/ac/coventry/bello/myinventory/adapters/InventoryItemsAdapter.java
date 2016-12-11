@@ -89,7 +89,10 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
     }
 
     public void handleDataSetChangedAnimations() {
-        for (InventoryItem item: mOldItemList) {
+        ArrayList<InventoryItem> reversedOldItemList = new ArrayList<>(mOldItemList);
+        Collections.reverse(reversedOldItemList);
+
+        for (InventoryItem item: reversedOldItemList) {
             if (!mItemList.contains(item)) {
                 Log.v(TAG, "Item removed at " + String.valueOf(mOldItemList.indexOf(item)));
                 notifyItemRemoved(mOldItemList.indexOf(item));
@@ -123,6 +126,7 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
                 return inventoryItem.getName().toLowerCase().compareTo(t1.getName().toLowerCase());
             }
         });
+
     }
 
     public void notifyInventoryChanged() {
