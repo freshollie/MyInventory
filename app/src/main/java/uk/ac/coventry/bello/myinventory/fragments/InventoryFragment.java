@@ -79,16 +79,6 @@ public class InventoryFragment extends MyInventoryFragment {
 
     }
 
-    public void launchUpdateItemFragment(InventoryItem item) {
-        UpdateItemFragment updateItemFragment = new UpdateItemFragment();
-
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-
-        updateItemFragment.setEditItem(item);
-        updateItemFragment.setAdapter(mAdapter);
-        updateItemFragment.show(fragmentManager, "UpdateItemFragment");
-    }
-
     public void setUpToolbarLayout() {
         mMainActivity.setAppBarColor(
                 ContextCompat.getColor(getContext(), R.color.colorPrimary)
@@ -99,6 +89,16 @@ public class InventoryFragment extends MyInventoryFragment {
 
         mMainActivity.setMenuLayout(R.menu.menu_main_inventory);
         mMainActivity.invalidateOptionsMenu();
+    }
+
+    public void launchUpdateItemFragment(InventoryItem item) {
+        UpdateItemFragment updateItemFragment = new UpdateItemFragment();
+
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+
+        updateItemFragment.setEditItem(item);
+        updateItemFragment.setAdapter(mAdapter);
+        updateItemFragment.show(fragmentManager, "UpdateItemFragment");
     }
 
     public void setUpFabAction() {

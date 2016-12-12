@@ -89,6 +89,9 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
     }
 
     public void handleDataSetChangedAnimations() {
+        /*
+        Creates animations for the new items added
+         */
         ArrayList<InventoryItem> reversedOldItemList = new ArrayList<>(mOldItemList);
         Collections.reverse(reversedOldItemList);
 
@@ -106,20 +109,13 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
             }
         }
 
-        notifyItemRangeChanged(0, getItemCount());
-/*
-        for (InventoryItem item: mItemList) {
-            if (mItemList.indexOf(item) != mOldItemList.indexOf(item)) {
-                Log.v(TAG, "Item moved from " + String.valueOf(mItemList.indexOf(item)));
-                notifyItemMoved(mOldItemList.indexOf(item), mItemList.indexOf(item));
-            }
-        }
-        */
-
+        notifyItemRangeChanged(0, getItemCount()); // Notify the new number of items
     }
 
     public void collectItemsList() {
-        mItemList = mInventory.getItems();
+        mItemList = mInventory.getItems(); // Gets the updated list
+
+        // Sorts the list by item name
         Collections.sort(mItemList, new Comparator<InventoryItem>() {
             @Override
             public int compare(InventoryItem inventoryItem, InventoryItem t1) {
@@ -132,9 +128,11 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
     public void notifyInventoryChanged() {
         mOldItemList = mItemList;
         collectItemsList();
-        //notifyDataSetChanged();
+
         handleDataSetChangedAnimations();
+
         mParentInventoryFragment.onInventoryChanged();
+        // tell the fragment to check if there are no items
     }
 
     public boolean isSelectionMode(){
@@ -245,7 +243,7 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
         holder.mRemoveButton.setOnClickListener(null);
         holder.mRelativeLayout.setOnLongClickListener(null);
 
-        // Set these click listeners if we are not in delete mode
+        // Set these click listeners if we are not in selection mode
         if (!isSelectionMode()) {
             holder.mAddButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -260,8 +258,13 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
                 @Override
                 public void onClick(View view) {
                     if (mInventory.getQuantity(item) > 0) {
+                        // decrease the quantity
                         mInventory.setItem(item, mInventory.getQuantity(item) - 1);
+
+                        // save the new inventory
                         mInventory.save(view.getContext());
+
+                        // tell the adapter to update this item
                         notifyItemChanged(holder.getAdapterPosition());
 
                     }
@@ -272,8 +275,9 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
                 @Override
                 public boolean onLongClick(View v) {
                     setSelectionMode(true);
-                    appendSelectedItem(holderPosition);
-                    return true;
+
+                    appendSelectedItem(holderPosition); // Select the current item
+                    return true; // Make phone give hold feedback
                 }
             });
         }
@@ -284,11 +288,10 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
                 if(isSelectionMode()){
 
                     if(getSelectedItemIndexes().contains(holderPosition)) {
-
-                        removeSelectedItem(holderPosition);
+                        removeSelectedItem(holderPosition); // deselect this item
 
                     } else {
-                        appendSelectedItem(holderPosition);
+                        appendSelectedItem(holderPosition); // select this item
                     }
                 } else {
                     mParentInventoryFragment.launchUpdateItemFragment(item);
