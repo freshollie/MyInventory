@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.view.ViewGroup;
 import android.view.View;
@@ -16,7 +15,6 @@ import android.view.LayoutInflater;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.text.DecimalFormat;
 
 import uk.ac.coventry.bello.myinventory.R;
@@ -294,7 +292,7 @@ public class InventoryItemsAdapter extends RecyclerView.Adapter<InventoryItemsAd
                         appendSelectedItem(holderPosition); // select this item
                     }
                 } else {
-                    mParentInventoryFragment.launchUpdateItemFragment(item);
+                    mParentInventoryFragment.launchUpdateItemDialog(item);
                 }
             }
         });

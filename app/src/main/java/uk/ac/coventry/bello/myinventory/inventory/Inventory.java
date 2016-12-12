@@ -86,12 +86,10 @@ public class Inventory {
     }
 
     public Set<String> getSaveStringSet(){
-        Iterator<InventoryItem> items = mInventory.keySet().iterator();
-
         Set<String> stringSet = new HashSet<>();
-        while(items.hasNext()){
+
+        for (InventoryItem item: getItems()) {
             JSONObject finalJsonObject = new JSONObject();
-            InventoryItem item = items.next();
 
             try {
                 finalJsonObject.put("item", item.getJson());

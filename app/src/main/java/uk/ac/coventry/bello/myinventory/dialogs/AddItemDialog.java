@@ -1,4 +1,4 @@
-package uk.ac.coventry.bello.myinventory.fragments;
+package uk.ac.coventry.bello.myinventory.dialogs;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -23,8 +23,8 @@ import uk.ac.coventry.bello.myinventory.inventory.InventoryItem;
  * Created by bello on 28/11/2016.
  */
 
-public class AddItemFragment extends DialogFragment {
-    private final String TAG = "AddItemFragment";
+public class AddItemDialog extends DialogFragment {
+    private final String TAG = "AddItemDialog";
     private View mView;
     private InventoryItemsAdapter mAdapter;
     private InventoryItem presetItem;
@@ -53,7 +53,7 @@ public class AddItemFragment extends DialogFragment {
                 .setPositiveButton(positiveButtonTextStringId, null)
                 .setNegativeButton(cancelButtonTextStringId, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        AddItemFragment.this.getDialog().cancel();
+                        AddItemDialog.this.getDialog().cancel();
                     }
                 });
 

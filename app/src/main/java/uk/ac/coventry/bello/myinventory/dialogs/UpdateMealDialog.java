@@ -1,4 +1,4 @@
-package uk.ac.coventry.bello.myinventory.fragments;
+package uk.ac.coventry.bello.myinventory.dialogs;
 
 import android.view.View;
 
@@ -14,10 +14,10 @@ import uk.ac.coventry.bello.myinventory.inventory.MealsList;
  * Created by Freshollie on 03/12/2016.
  */
 
-public class UpdateMealFragment extends AddMealFragment {
+public class UpdateMealDialog extends AddMealDialog {
     private Meal editMeal;
 
-    public UpdateMealFragment() {
+    public UpdateMealDialog() {
 
         setPositiveButtonOnClickListener(new View.OnClickListener() {
             @Override

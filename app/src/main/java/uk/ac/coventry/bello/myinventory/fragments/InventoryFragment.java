@@ -27,6 +27,8 @@ import java.util.Calendar;
 
 import uk.ac.coventry.bello.myinventory.R;
 import uk.ac.coventry.bello.myinventory.activities.MainActivity;
+import uk.ac.coventry.bello.myinventory.dialogs.AddItemDialog;
+import uk.ac.coventry.bello.myinventory.dialogs.UpdateItemDialog;
 import uk.ac.coventry.bello.myinventory.fragments.templates.MyInventoryFragment;
 import uk.ac.coventry.bello.myinventory.inventory.Inventory;
 import uk.ac.coventry.bello.myinventory.adapters.InventoryItemsAdapter;
@@ -75,7 +77,7 @@ public class InventoryFragment extends MyInventoryFragment {
 
         setUpToolbarLayout();
 
-        setUpFabAction();
+        setupFabAction();
 
     }
 
@@ -91,26 +93,33 @@ public class InventoryFragment extends MyInventoryFragment {
         mMainActivity.invalidateOptionsMenu();
     }
 
-    public void launchUpdateItemFragment(InventoryItem item) {
-        UpdateItemFragment updateItemFragment = new UpdateItemFragment();
+    /**
+     * Called to launch the update item dialog with the provided item
+     * @param item
+     */
+    public void launchUpdateItemDialog(InventoryItem item) {
+        UpdateItemDialog updateItemDialog = new UpdateItemDialog();
 
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 
-        updateItemFragment.setEditItem(item);
-        updateItemFragment.setAdapter(mAdapter);
-        updateItemFragment.show(fragmentManager, "UpdateItemFragment");
+        updateItemDialog.setEditItem(item);
+        updateItemDialog.setAdapter(mAdapter);
+        updateItemDialog.show(fragmentManager, "UpdateItemDialog");
     }
 
-    public void setUpFabAction() {
+    /**
+     * Sets the FAB action to open an AddItemDialog
+     */
+    public void setupFabAction() {
         mMainActivity.setFabOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final AddItemFragment addItemFragment = new AddItemFragment();
+                final AddItemDialog addItemDialog = new AddItemDialog();
 
                 FragmentManager fragmentManager = InventoryFragment.this.getActivity().getSupportFragmentManager();
 
-                addItemFragment.setAdapter(mAdapter);
-                addItemFragment.show(fragmentManager, "AddItemFragment");
+                addItemDialog.setAdapter(mAdapter);
+                addItemDialog.show(fragmentManager, "AddItemDialog");
             }
         });
 

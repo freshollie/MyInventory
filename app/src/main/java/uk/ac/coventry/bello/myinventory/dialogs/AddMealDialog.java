@@ -1,4 +1,4 @@
-package uk.ac.coventry.bello.myinventory.fragments;
+package uk.ac.coventry.bello.myinventory.dialogs;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -30,8 +30,8 @@ import uk.ac.coventry.bello.myinventory.inventory.MealsList;
  * Created by bello on 28/11/2016.
  */
 
-public class AddMealFragment extends DialogFragment {
-    private final String TAG = "AddMealFragment";
+public class AddMealDialog extends DialogFragment {
+    private final String TAG = "AddMealDialog";
 
     private View mView;
     private MealsAdapter mAdapter;
@@ -79,7 +79,7 @@ public class AddMealFragment extends DialogFragment {
                 .setPositiveButton(positiveButtonTextStringId, null)
                 .setNegativeButton(cancelButtonTextStringId, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        AddMealFragment.this.getDialog().cancel();
+                        AddMealDialog.this.getDialog().cancel();
                     }
                 });
 

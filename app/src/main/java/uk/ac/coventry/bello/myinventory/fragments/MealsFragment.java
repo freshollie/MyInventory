@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import uk.ac.coventry.bello.myinventory.R;
 import uk.ac.coventry.bello.myinventory.activities.MainActivity;
 import uk.ac.coventry.bello.myinventory.adapters.MealsAdapter;
+import uk.ac.coventry.bello.myinventory.dialogs.AddMealDialog;
+import uk.ac.coventry.bello.myinventory.dialogs.UpdateMealDialog;
 import uk.ac.coventry.bello.myinventory.fragments.templates.MyInventoryFragment;
 import uk.ac.coventry.bello.myinventory.inventory.InventoryItem;
 import uk.ac.coventry.bello.myinventory.inventory.Meal;
@@ -96,26 +98,26 @@ public class MealsFragment extends MyInventoryFragment {
     }
 
     public void launchAddMealFragment(ArrayList<InventoryItem> initialIngredients){
-        AddMealFragment addMealFragment = new AddMealFragment();
+        AddMealDialog addMealDialog = new AddMealDialog();
 
         if (initialIngredients != null) {
-            addMealFragment.setPresetIngredients(initialIngredients);
+            addMealDialog.setPresetIngredients(initialIngredients);
         }
 
         FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
 
-        addMealFragment.setAdapter(mAdapter);
-        addMealFragment.show(fragmentManager, "AddMealFragment");
+        addMealDialog.setAdapter(mAdapter);
+        addMealDialog.show(fragmentManager, "AddMealDialog");
     }
 
     public void launchUpdateMealFragment(Meal meal){
-        UpdateMealFragment updateMealFragment = new UpdateMealFragment();
+        UpdateMealDialog updateMealFragment = new UpdateMealDialog();
         updateMealFragment.setEditMeal(meal);
 
         FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
 
         updateMealFragment.setAdapter(mAdapter);
-        updateMealFragment.show(fragmentManager, "UpdateMealFragment");
+        updateMealFragment.show(fragmentManager, "UpdateMealDialog");
     }
 
     public void setInitialIngredients(ArrayList<InventoryItem> ingredients){
