@@ -161,6 +161,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onPrepareAnimateToolbarChangeAnimation(Integer colorFrom, Integer colorTo) {
+        /*
+        Called to animate a colour change for the toolbar
+         */
 
         if (colorFrom != colorTo) {
 
@@ -169,13 +172,14 @@ public class MainActivity extends AppCompatActivity
             colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
                 @Override
-                public void onAnimationUpdate(ValueAnimator animator) {
+                public void onAnimationUpdate(ValueAnimator animator) { // every step update the colour
                     mToolbar.setBackgroundColor((Integer) animator.getAnimatedValue());
                     mDrawer.setStatusBarBackground(new ColorDrawable((Integer) animator.getAnimatedValue()));
+                    // set status bar background colour keeps the status bar transparent
                 }
             });
 
-            colorAnimation.setDuration(150);
+            colorAnimation.setDuration(150); // duration MS
             colorAnimation.setStartDelay(0);
             colorAnimation.start();
         }
@@ -185,26 +189,27 @@ public class MainActivity extends AppCompatActivity
     public void onPrepareUpdateToolbar() {
 
         Integer colorFrom = ((ColorDrawable) findViewById(R.id.main_activity_toolbar).getBackground()).getColor(); // Get the current toolbar color
-        Integer colorTo = ((ColorDrawable) findViewById(R.id.main_activity_toolbar).getBackground()).getColor();
+        Integer colorTo = colorFrom; // Set the default new color to the old colour
 
-        if (menuLayout != 0) {
+        if (menuLayout != 0) { // If a menulayout has been set
 
             if (menuLayout != R.menu.menu_main_inventory_highlight && menuLayout != R.menu.menu_main_delete) {
+                // Set the default colours if we are not these 2 types of menu
 
                 mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mDrawer.openDrawer(GravityCompat.START);
+                        mDrawer.openDrawer(GravityCompat.START); // Set the drawer to open when the hambuger menu is clicked
                     }
                 });
 
                 ObjectAnimator.ofFloat(mDrawerArrow, "progress", 0).start();
 
-                mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+                mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED); // Make the drawer swipeable again
 
                 colorTo = toolbarPrimaryColor;
 
-                mFab.show();
+                mFab.show(); // FAB load animation
 
             } else {
 
@@ -213,17 +218,17 @@ public class MainActivity extends AppCompatActivity
                 mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        onBackPressed();
+                        onBackPressed(); // set the arrow to do the same as the back button
                     }
                 });
 
-                mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED); // Make the drawer unopenable
 
                 ObjectAnimator.ofFloat(mDrawerArrow, "progress", 1).start(); // Make draw arrow switch to back position
 
                 colorTo = toolbarAccentColor;
 
-                mFab.hide();
+                mFab.hide(); // Fab hide animation
             }
         }
 
