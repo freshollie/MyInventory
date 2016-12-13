@@ -169,10 +169,18 @@ public class Inventory {
         return null;
     }
 
+    /**
+     * @param item
+     * @return true if the item is in the inventory
+     */
     public boolean isNotMissing(InventoryItem item){
         return getQuantity(item) > 0;
     }
 
+    /**
+     * @param itemList
+     * @return true if all given items are in the inventory
+     */
     public boolean isNotMissing(ArrayList<InventoryItem> itemList) {
         for(InventoryItem item: itemList) {
             if (!isNotMissing(item)){

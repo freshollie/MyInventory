@@ -121,15 +121,20 @@ public class AddMealDialog extends DialogFragment {
     }
 
     public void newIngredientSpinner() {
+        /**
+         * Creates a new ingredient spinner with
+         * the action set to make a new spinner when set
+         */
         numIngredientSpinners ++;
         final int ingredientSpinnerNum = numIngredientSpinners;
-        AppCompatSpinner spinner = new AppCompatSpinner(getActivity());
+        AppCompatSpinner spinner = new AppCompatSpinner(getActivity()); // Make a new spinner
 
 
         ArrayAdapter<String> ingredientsAdapter = new ArrayAdapter<>(
                 getActivity(),
                 android.R.layout.simple_spinner_item,
                 ingredientsNameArray
+                // List of ingredient names, including the select ingredient option
         );
 
         ingredientsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -139,7 +144,9 @@ public class AddMealDialog extends DialogFragment {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i != 0 && ingredientSpinnerNum == numIngredientSpinners) { // We have selected an ingredient, and the this spinner is the latest spinner
+                if (i != 0 && ingredientSpinnerNum == numIngredientSpinners) {
+                    // We have selected an ingredient, and the this spinner is the latest spinner
+
                     newIngredientSpinner(); // Create a new spinner
                 }
             }
@@ -151,22 +158,22 @@ public class AddMealDialog extends DialogFragment {
         });
 
         LinearLayout ingredientsSpinnerList = (LinearLayout) mView.findViewById(R.id.meal_ingredients_spinner_list);
-        ingredientsSpinnerList.addView(spinner);
+        ingredientsSpinnerList.addView(spinner); // Add the spinner to the list of spinners
         mLastSpinner = spinner;
 
     }
 
     public void createIngredientsSpinners() {
-        newIngredientSpinner(); // We always make 1
+        newIngredientSpinner(); // We always make 1 extra spinner
 
-        if (presetIngredients != null) { // We have data for the
+        if (presetIngredients != null) { // We have data for the spinners
             for (InventoryItem ingredient : presetIngredients) {
                 mLastSpinner.setSelection(ingredientsList.indexOf(ingredient.getName()));
                 newIngredientSpinner();
             }
 
         } else {
-            for (int i = 0; i < 0; i++) {
+            for (int i = 0; i < 0; i++) { // For debugging
                 newIngredientSpinner();
             }
         }
@@ -294,6 +301,21 @@ public class AddMealDialog extends DialogFragment {
         return ingredientsList;
     }
 
+    public void handleCategory(String category) {
+        MealCategories mealCategories = MealCategories.getInstance();
+        if (!mealCategories.contains(category)) {
+            mealCategories.add(category);
+        }
+        mealCategories.save(getContext());
+    }
+
+    /**
+     * Called to validate the user input to the dialog and produces a message if false
+     * @param name
+     * @param category
+     * @param ingredients
+     * @return true if valid input
+     */
     public boolean validate(String name, String category, ArrayList<InventoryItem> ingredients) {
         String alertMessage = "";
         if (name.isEmpty()) {
@@ -307,7 +329,7 @@ public class AddMealDialog extends DialogFragment {
         }
 
         if (!alertMessage.isEmpty()) {
-            new AlertDialog.Builder(getActivity())
+            new AlertDialog.Builder(getActivity()) // Make a pop up message for that alert
                     .setMessage(alertMessage)
                     .setCancelable(true)
                     .setPositiveButton(getString(R.string.ok), null)
@@ -318,14 +340,10 @@ public class AddMealDialog extends DialogFragment {
         return true;
     }
 
-    public void handleCategory(String category) {
-        MealCategories mealCategories = MealCategories.getInstance();
-        if (!mealCategories.contains(category)) {
-            mealCategories.add(category);
-        }
-        mealCategories.save(getContext());
-    }
-
+    /**
+     * Called so save the meal when the user requests it
+     * @return true if the meal is saved
+     */
     private boolean saveMeal() {
         MealsList mealsList = MealsList.getInstance();
 
@@ -338,7 +356,7 @@ public class AddMealDialog extends DialogFragment {
             mealsList.add(meal);
             mealsList.save(getContext());
 
-            handleCategory(category);
+            handleCategory(category); //
 
             return true;
         }

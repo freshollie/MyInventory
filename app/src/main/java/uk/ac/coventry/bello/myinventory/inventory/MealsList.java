@@ -37,6 +37,11 @@ public class MealsList extends ArrayList<Meal>{
         return INSTANCE;
     }
 
+    /**
+     * Makes a string set of json strings representing
+     * meals in the MealsList.
+     * @return stringSet
+     */
     public Set<String> getSaveStringSet(){
 
         Set<String> stringSet = new HashSet<>();
@@ -68,6 +73,11 @@ public class MealsList extends ArrayList<Meal>{
         return new ArrayList<>(this);
     }
 
+    /**
+     * Saves the MealList to shared preferences with each meal as
+     * a json object string
+     * @param context
+     */
     public void save(Context context){
         SharedPreferences mPrefs = context.getSharedPreferences(context.getString(R.string.save_key), 0);
         SharedPreferences.Editor editor = mPrefs.edit();
@@ -77,8 +87,12 @@ public class MealsList extends ArrayList<Meal>{
         editor.commit();
     }
 
+    /**
+     * Loads the list from the shared preferences
+     * @param context
+     */
     public void load(Context context){
-        clear();
+        clear(); // Cleared the old list
 
         SharedPreferences mPrefs = context.getSharedPreferences(context.getString(R.string.save_key), Context.MODE_PRIVATE);
 
@@ -92,9 +106,8 @@ public class MealsList extends ArrayList<Meal>{
                     String name = jsonMeal.getString("name");
                     String category = jsonMeal.getString("category");
 
+
                     ArrayList<InventoryItem> ingredients = new ArrayList<>();
-
-
 
                     JSONArray ingredientsList = jsonMeal.getJSONArray("ingredients");
 
@@ -103,12 +116,12 @@ public class MealsList extends ArrayList<Meal>{
                         InventoryItem ingredient = mInventory.getItemFromName(ingredientsList.getString(i));
 
                         if (ingredient != null) {
-                            ingredients.add(ingredient);
+                            ingredients.add(ingredient); // Build the ingredients list
                         }
 
                     }
 
-                    add(new Meal(name, ingredients, category));
+                    add(new Meal(name, ingredients, category)); // Add that saved meal to the list
 
 
                 } catch (JSONException e) {

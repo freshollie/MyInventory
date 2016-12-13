@@ -235,21 +235,34 @@ public class InventoryFragment extends MyInventoryFragment {
         void onFragmentInteraction(Uri uri);
     }
 
+    /**
+     * Tries to push the list of needed items
+     * to google keep and displays an error message
+     * if the user doesn't have google keep.
+     */
     public void pushToKeep(){
         if (!mInventory.getMissingItemsNameList().isEmpty()) { // We actually have items to put into the shopping list
             try {
 
                 String date = DateFormat.getDateInstance().format(Calendar.getInstance().getTime());
+                // Get the date format
+
                 Intent keepIntent = new Intent(Intent.ACTION_SEND);
 
                 keepIntent.setType("text/plain");
                 keepIntent.setPackage("com.google.android.keep");
+
                 keepIntent.putExtra(Intent.EXTRA_SUBJECT, getContext().getString(R.string.shopping_list_title, date));
+                //Sets the subject to Shopping List + date
+
                 keepIntent.putExtra(Intent.EXTRA_TEXT, TextUtils.join("\n", mInventory.getMissingItemsNameList()));
+                // Sets the text to items separated by new line characters
 
                 startActivity(keepIntent);
+                // Sends the intent
 
             } catch (Exception e) {
+                // Google keep doesn't exist as a package
 
                 Snackbar.make(mActivity.findViewById(R.id.main_activity_content_layout), getContext().getString(R.string.no_google_keep), Snackbar.LENGTH_LONG)
                         .setAction("Dismiss", new View.OnClickListener() {
@@ -261,6 +274,7 @@ public class InventoryFragment extends MyInventoryFragment {
             }
 
         } else {
+            // No items for the list
             Snackbar.make(mActivity.findViewById(R.id.main_activity_content_layout), getContext().getString(R.string.no_shopping_items), Snackbar.LENGTH_LONG)
                     .setAction("Dismiss", new View.OnClickListener() {
                         @Override

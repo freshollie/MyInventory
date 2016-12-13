@@ -56,6 +56,11 @@ public class Meal {
         category = newCategory;
     }
 
+    /**
+     *
+     * @return JSONObject containing all the information to build
+     *         this object
+     */
     public JSONObject getJson(){
         JSONObject jsonMeal = new JSONObject();
         JSONArray mealsArray = new JSONArray();
