@@ -6,4 +6,4 @@ The app is used to keep track of a users food "Inventory". It allows the user to
 
 The app was written to gain the maximum marks on the markscheme as written out in the "Assignment". The report I wrote for this app can also be read in this repository.
 
-<img src="https://github.com/freshollie/MyInventory/raw/master/screenshots/app_screenshot.png" alt="My Inventory" style="width: 200px;"/>
+<img src="https://github.com/freshollie/MyInventory/raw/master/screenshots/app_screenshot.png" alt="My Inventory" width="200"/>
